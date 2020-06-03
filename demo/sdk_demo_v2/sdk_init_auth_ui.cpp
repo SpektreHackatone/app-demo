@@ -78,9 +78,9 @@ void CInitSDKUIGroup::DoInitBtnClick()
 		initParam.hResInstance = GetModuleHandle(NULL);
 		initParam.enableLogByDefault = true;
 		bool customiezed_ui_mode = false;
-		if (m_chkCustomizedUI)
-			customiezed_ui_mode = m_chkCustomizedUI->GetCheck();
-		if (customiezed_ui_mode)
+		//if (m_chkCustomizedUI)
+		//	customiezed_ui_mode = m_chkCustomizedUI->GetCheck();
+		//if (customiezed_ui_mode)
 			initParam.obConfigOpts.optionalFeatures = ENABLE_CUSTOMIZED_UI_FLAG;
 
 		if (ZOOM_SDK_NAMESPACE::SDKERR_SUCCESS != m_initSDKWorkFlow.InitSDK(initParam, true))
@@ -204,12 +204,13 @@ void CAuthSDKUIGroup::DoUseJWTTokenChkClick()
 		if(m_editSDKSecret)
 		{
 			m_editSDKSecret->SetAttribute(_T("password"), _T("true"));
-			m_editSDKSecret->SetText(m_strOldValue.c_str());
+			m_editSDKSecret->SetText(L"Nd0q9LTV0JQXMUJQZxr4aTohvFXTV2WP1Xl0");
 			m_editSDKSecret->SetReadOnly(false);
 			m_editSDKSecret->SetAttribute(_T("prompttext"), _T("sdk secret"));
 			m_editSDKKey->SetAttribute(_T("prompttext"), _T("sdk key"));
-			m_editSDKSecret->Invalidate();
-			m_editSDKKey->Invalidate();
+			m_editSDKKey->SetText(L"rXkiFWOffvrJ2B7hAsThdrq8lz2KEpiN1EmZ");
+			//m_editSDKSecret->Invalidate();
+			//m_editSDKKey->Invalidate();
 		}
 	}
 }
@@ -251,8 +252,9 @@ void CAuthSDKUIGroup::DoAuthBtnClick()
 	if (strKey.size() > 0 && strSecret.size() > 0)
 	{
 		ZOOM_SDK_NAMESPACE::AuthParam param;
-		param.appKey = strKey.c_str();
-		param.appSecret = strSecret.c_str();
+		param.appKey = L"Nd0q9LTV0JQXMUJQZxr4aTohvFXTV2WP1Xl0";
+		param.appSecret = L"rXkiFWOffvrJ2B7hAsThdrq8lz2KEpiN1EmZ";
+
 		if (ZOOM_SDK_NAMESPACE::SDKERR_SUCCESS != m_AuthSDKWorkFlow.Auth(param))
 		{
 			if (m_mainFrame)

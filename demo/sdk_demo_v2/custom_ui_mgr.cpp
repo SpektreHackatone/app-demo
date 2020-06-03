@@ -585,6 +585,9 @@ void CCustomizeInMeetingUIMgr::HandleInMeeting()
 	DoLayout();
 	UpdateUserList();
 	UpdateMeetingTitle();
+
+	// disable waiting room
+	m_pMeetingService->GetMeetingWaitingRoomController()->EnableWaitingRoomOnEntry(false);
 }
 
 void CCustomizeInMeetingUIMgr::HandleMoveToWaitingRoom()
