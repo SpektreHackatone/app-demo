@@ -541,6 +541,7 @@ void CCustomizeInMeetingUIMgr::onMeetingStatusChanged(ZOOM_SDK_NAMESPACE::Meetin
 		break;
 	case ZOOM_SDK_NAMESPACE::MEETING_STATUS_INMEETING:
 		{
+			// TODO: add some initialization code here
 			HandleInMeeting();
 		}
 		break;
@@ -688,6 +689,7 @@ void CCustomizeInMeetingUIMgr::onSharingStatus(ZOOM_SDK_NAMESPACE::SharingStatus
 
 void CCustomizeInMeetingUIMgr::onUserJoin(ZOOM_SDK_NAMESPACE::IList<unsigned int >* lstUserID, const wchar_t* strUserList /*= NULL*/)
 {
+	// TODO: this function is called when user is added, so use it to handle our things
 	if (!m_bInMeeting || NULL == lstUserID)
 		return;
 
