@@ -577,8 +577,9 @@ void CCustomizeInMeetingUIMgr::HandleInMeeting()
 		return;
 
 	CreateArrowWindow();
-	m_pCustomizeUIVideoMgr->CalulateViewRect();
-	m_pCustomizeUIVideoMgr->ShowActiveViewVideo();
+	// active video is not required in our project
+	//m_pCustomizeUIVideoMgr->CalulateViewRect();
+	//m_pCustomizeUIVideoMgr->ShowActiveViewVideo();
 	
 	m_pCustomizeShareMgr->ShowSharedContent();
 	ShowToolbar();
@@ -655,7 +656,7 @@ void CCustomizeInMeetingUIMgr::DoLayout()
 	{
 		m_pCustomizeUIVideoMgr->CalulateViewRect();
 	}
-	DoLayoutActiveVideo();
+	//DoLayoutActiveVideo();
 	DoLayoutNormalVideo();
 }
 
@@ -669,10 +670,7 @@ void CCustomizeInMeetingUIMgr::DoLayoutNormalVideo()
 {
 	if(m_pCustomizeUIVideoMgr)
 	{
-		if(m_bShowGalleryView)
-			m_pCustomizeUIVideoMgr->ShowGalleryViewVideo();
-		else
-			m_pCustomizeUIVideoMgr->HideGalleryViewVideo();
+		m_pCustomizeUIVideoMgr->ShowGalleryViewVideo();
 	}
 }
 
