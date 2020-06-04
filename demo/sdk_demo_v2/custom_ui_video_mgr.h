@@ -24,7 +24,8 @@
 #define Normal_PageButton_Height 40
 #define Normal_Toolbar_Width 60
 
-#define NormalVideo_Elem_MaxCount 6 
+#define NormalVideo_Elem_MaxCount 12
+#define NormalVideo_MaxInColumn 3
 
 class CCustomizeInMeetingUIMgr;
 
@@ -85,7 +86,9 @@ private:
 	bool m_bNeedInitGalleryView;
 	int m_iGalleryTotalPage;
 	int m_iGalleryCurrentPage;
-	int m_iVideoCountInOnePage;
+	int m_iVideoCountInOneColumn;
+	int m_iVideoCountInOneRow;
+
 	CCustomizeUIVideoFlow m_customUIVideoFlow;
 };
 

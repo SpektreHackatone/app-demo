@@ -47,7 +47,8 @@ void CCustomizeUIVideoMgr::init()
 	m_pActiveElem = NULL;
 	m_pPreviewElem = NULL;
 	m_hParentWnd = NULL;
-	m_iVideoCountInOnePage = GalleryView_Need_Init;
+	m_iVideoCountInOneColumn = GalleryView_Need_Init;
+	m_iVideoCountInOneRow = GalleryView_Need_Init;
 	m_bNeedInitGalleryView = true;
 	m_iGalleryCurrentPage = 1;
 	m_iGalleryTotalPage = 1;
@@ -175,35 +176,40 @@ void CCustomizeUIVideoMgr::ShowGalleryViewVideo(GalleryViewSubscribeType nType)
 {	
 	CreateGalleryViewVideo();
 	ReSubscribeNormalUser(nType);
-	int nElementHight = (m_rcGalleryView.bottom-m_rcGalleryView.top)/m_iVideoCountInOnePage;
-	int iShowed = 0;
-	for (int i = 0; i < m_iVideoCountInOnePage; i++)
+	int nElementHight = (m_rcGalleryView.bottom-m_rcGalleryView.top)/m_iVideoCountInOneColumn;
+	int nElementWidth = (m_rcGalleryView.right - m_rcGalleryView.left)/m_iVideoCountInOneRow;
+
+	int iRow = 0;
+	int iColumn = 0;
+	for (int i = 0; i < NormalVideo_Elem_MaxCount; i++)
 	{
 		ZOOM_SDK_NAMESPACE::INormalVideoRenderElement* pElementNormal = m_pNormalElemGallery[i];
 		if (pElementNormal)
 		{
+			// element placement here
 			RECT element_rc_ = m_rcGalleryView;
-			element_rc_.top = iShowed * nElementHight;
+			element_rc_.top = iRow * nElementHight;
 			element_rc_.bottom = nElementHight + element_rc_.top;
+
+			element_rc_.left = iColumn * nElementWidth;
+			element_rc_.right = element_rc_.left + nElementWidth;
+
 			pElementNormal->SetPos(element_rc_);
 
-			if (pElementNormal->GetCurrentRenderUserId() > 0)
-			{
-				m_customUIVideoFlow.ShowGalleryViewVideo(pElementNormal, element_rc_);
-				iShowed++;
-				m_bIsGalleryViewShown = true;
+			m_customUIVideoFlow.ShowGalleryViewVideo(pElementNormal, element_rc_);
+			iRow++;
+			if (iRow >= m_iVideoCountInOneColumn) {
+				iRow = 0;
+				iColumn++;
 			}
-			else
-			{
-				m_customUIVideoFlow.HideGalleryViewVideo(pElementNormal);
-			}
+			m_bIsGalleryViewShown = true;
 		}
 	}
 }
 
 void CCustomizeUIVideoMgr::HideGalleryViewVideo()
 {
-	for (int i = 0; i < m_iVideoCountInOnePage; i++)
+	for (int i = 0; i < m_iVideoCountInOneColumn; i++)
 	{
 		ZOOM_SDK_NAMESPACE::INormalVideoRenderElement* pElementNormal = m_pNormalElemGallery[i];
 		if (pElementNormal)
@@ -272,7 +278,7 @@ void CCustomizeUIVideoMgr::CalculateCurrentGalleryViewRect()
 
 		rcMain.bottom = rcMain.bottom - DEFAULT_TOOLBAR_HEIGHT;
 		int nWidth = rcMain.right - rcMain.left - VideoElement_Normal_width;
-		rcMain.left = nWidth;
+		//rcMain.left = nWidth;
 		m_rcGalleryView = rcMain;
 	}
 }
@@ -281,12 +287,23 @@ void CCustomizeUIVideoMgr::CalculateCountInOnePages()
 {
 	if(m_hParentWnd && IsWindow(m_hParentWnd))
 	{
-		int nCount = (m_rcActiveView.bottom - m_rcActiveView.top) / VideoElement_Normal_height; 
-		if( 0 >= nCount)
-			nCount = 1;
-		if(nCount > NormalVideo_Elem_MaxCount)
-			nCount = NormalVideo_Elem_MaxCount;
-		m_iVideoCountInOnePage = nCount;
+		int nRowCount = (m_rcActiveView.bottom - m_rcActiveView.top) / VideoElement_Normal_height;
+		int nColumnCount = (m_rcActiveView.right - m_rcActiveView.left) / VideoElement_Normal_width;
+
+		if( 0 >= nRowCount)
+			nRowCount = 1;
+		if(nRowCount > NormalVideo_MaxInColumn)
+			nRowCount = NormalVideo_MaxInColumn;
+
+		const int nMaxColumns = NormalVideo_Elem_MaxCount / NormalVideo_MaxInColumn;
+
+		if (0 >= nColumnCount)
+			nColumnCount = 1;
+		if (nColumnCount > nMaxColumns)
+			nColumnCount = nMaxColumns;
+
+		m_iVideoCountInOneRow = 4;//nColumnCount;
+		m_iVideoCountInOneColumn = 3; // nRowCount;
 	}
 }
 
@@ -302,8 +319,8 @@ void CCustomizeUIVideoMgr::CalculateTotalPages()
 
 		CalculateCountInOnePages();
 		int nUserCount = pUserList->GetCount();
-		m_iGalleryTotalPage = nUserCount/m_iVideoCountInOnePage;
-		if (nUserCount % m_iVideoCountInOnePage > 0)
+		m_iGalleryTotalPage = nUserCount/m_iVideoCountInOneColumn;
+		if (nUserCount % m_iVideoCountInOneColumn > 0)
 			++m_iGalleryTotalPage;
 		if(m_iGalleryTotalPage < m_iGalleryCurrentPage)
 			m_iGalleryCurrentPage = m_iGalleryTotalPage;
@@ -322,40 +339,17 @@ void CCustomizeUIVideoMgr::ReSubscribeNormalUser(GalleryViewSubscribeType nType)
 		return;
 
 	int nStart = 0;
-	int nCurrentPage = m_iGalleryCurrentPage;
-	switch(nType)
-	{
-	case GalleryView_Subscribe_CurrentPage:
-		break;
-	case GalleryView_Subscribe_PrePage:
-		nCurrentPage -= 1;
-		if(nCurrentPage < 1)
-			return;
-		break;
-	case GalleryView_Subscribe_NextPage:
-		nCurrentPage += 1;
-		break;
-	default:
-		break;
-	}
-	nStart = (nCurrentPage-1) * m_iVideoCountInOnePage;
 	int nTotalCount = pUserList->GetCount();
-	if (nStart > nTotalCount - 1)
-		return;
 
-	if(nStart < 0 )
-		nStart = 0;
-	
-	m_iGalleryCurrentPage = nCurrentPage;
 	int nElemIndex = 0;
-	for (int i = nStart; (i < nTotalCount && nElemIndex < m_iVideoCountInOnePage); i++)
+	for (int i = nStart; i < nTotalCount; i++)
 	{
 		ZOOM_SDK_NAMESPACE::IUserInfo* pUser = pUserList->GetItem(i);
 		if(!pUser)
 			continue;
 		unsigned int nUserID = pUser->GetUserID();
 
-		if (0 == nUserID || NULL == m_pNormalElemGallery[nElemIndex] || pUser->IsInWaitingRoom())
+		if (NULL == m_pNormalElemGallery[nElemIndex])
 			continue;
 
 		if (nUserID != m_pNormalElemGallery[nElemIndex]->GetCurrentRenderUserId())
@@ -369,16 +363,16 @@ void CCustomizeUIVideoMgr::ReSubscribeNormalUser(GalleryViewSubscribeType nType)
 		}
 	}
 
-	if (nElemIndex < (m_iVideoCountInOnePage-1))
+	/*if (nElemIndex < (m_iVideoCountInOneColumn-1))
 	{
-		for (;nElemIndex < m_iVideoCountInOnePage; nElemIndex++)
+		for (;nElemIndex < m_iVideoCountInOneColumn; nElemIndex++)
 		{
 			if (NULL == m_pNormalElemGallery[nElemIndex])
 				continue;
 			if (0 != m_pNormalElemGallery[nElemIndex]->GetCurrentRenderUserId())
 				m_pNormalElemGallery[nElemIndex]->Unsubscribe(m_pNormalElemGallery[nElemIndex]->GetCurrentRenderUserId());
 		}
-	}
+	}*/
 }
 
 void CCustomizeUIVideoMgr::HandleSizeChanged(RECT newRC)
