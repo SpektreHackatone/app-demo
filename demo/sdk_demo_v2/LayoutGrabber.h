@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "stdafx.h"
+#include "AlbumWindow.h"
 
 struct UserInLayout {
 	unsigned id = 0;
@@ -22,6 +23,8 @@ public:
 class LayoutGrabber : public ILayoutGrabberEvent
 {
 public:
+	LayoutGrabber();
+
 	void onMeetingChanged(bool start) override;
 	void onLayoutChanged(const Layout& layout) override;
 	void onHwndChanged(const HWND& hwnd) override;
@@ -31,5 +34,7 @@ public:
 private:
 	HWND m_layoutHwnd;
 	Layout m_layout;
+
+	AlbumWindowThread m_awThread;
 };
 

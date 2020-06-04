@@ -142,7 +142,7 @@
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\DuiLib\include;..\..\h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\SFML-2.5.1\include;..\DuiLib\include;..\..\h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;UILIB_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -152,9 +152,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>DuiLib_2017.lib;sdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DuiLib_2017.lib;sdk.lib;sfml-system.lib;sfml-window.lib;sfml-graphics.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\bin\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\lib;..\duilib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\SFML-2.5.1\lib;..\..\lib;..\duilib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -192,6 +192,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlbumWindow.cpp" />
     <ClCompile Include="AnnotateBarWindow.cpp" />
     <ClCompile Include="AnnotateClearWindow.cpp" />
     <ClCompile Include="AnnotateDrawWindow.cpp" />
@@ -265,6 +266,7 @@
     <ClCompile Include="zoomHmacSHA256.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlbumWindow.h" />
     <ClInclude Include="AnnotateBarWindow.h" />
     <ClInclude Include="AnnotateClearWindow.h" />
     <ClInclude Include="AnnotateDrawWindow.h" />
