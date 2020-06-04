@@ -328,13 +328,16 @@ void CSDKDemoApp::InitCustomizedUI()
 		if(NULL == m_customizedMeetingUI)
 		{
 			m_customizedMeetingUI = new CCustomizeInMeetingUIMgr();
-			if(m_customizedMeetingUI)
+			if (m_customizedMeetingUI) {
 				m_customizedMeetingUI->SetEvent(this);
+				m_customizedMeetingUI->SetGrabberEvent(&m_grabber);
+			}
 		}
 		else
 		{
 			m_customizedMeetingUI->Init();
 			m_customizedMeetingUI->SetEvent(this);
+			m_customizedMeetingUI->SetGrabberEvent(&m_grabber);
 		}
 	}
 }

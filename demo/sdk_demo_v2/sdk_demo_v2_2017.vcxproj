@@ -219,6 +219,7 @@
     <ClCompile Include="invitation_workflow.cpp" />
     <ClCompile Include="Join_meeting_for_login_user_ui.cpp" />
     <ClCompile Include="Join_meeting_for_login_user_workflow.cpp" />
+    <ClCompile Include="LayoutGrabber.cpp" />
     <ClCompile Include="LoggedIn_sdk_controller_ui.cpp" />
     <ClCompile Include="LoggedIn_sdk_controller_workflow.cpp" />
     <ClCompile Include="LOGIN_join_meeting_only_workflow.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="invitation_workflow.h" />
     <ClInclude Include="Join_meeting_for_login_user_ui.h" />
     <ClInclude Include="Join_meeting_for_login_user_workflow.h" />
+    <ClInclude Include="LayoutGrabber.h" />
     <ClInclude Include="LoggedIn_sdk_controller_ui.h" />
     <ClInclude Include="LoggedIn_sdk_controller_workflow.h" />
     <ClInclude Include="LOGIN_join_meeting_only_workflow.h" />

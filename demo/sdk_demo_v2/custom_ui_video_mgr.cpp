@@ -5,7 +5,14 @@ CCustomizeUIVideoMgr::CCustomizeUIVideoMgr(CCustomizeInMeetingUIMgr* pMainUI)
 {
 	m_pMainUI = pMainUI;
 	m_pCustomizedContainer = NULL;
+	m_grabberEvent = NULL;
 }
+
+void CCustomizeUIVideoMgr::SetGrabberEvent(ILayoutGrabberEvent* ev)
+{
+	m_grabberEvent = ev;
+}
+
 void CCustomizeUIVideoMgr::CreateCustomVideoContainer(ZOOM_SDK_NAMESPACE::ICustomizedUIMgr* pUIMgr, HWND hParent, RECT rc)
 {
 	if(!m_pMainUI)
@@ -204,6 +211,28 @@ void CCustomizeUIVideoMgr::ShowGalleryViewVideo(GalleryViewSubscribeType nType)
 			}
 			m_bIsGalleryViewShown = true;
 		}
+	}
+
+	// form layout info and send it to grabber
+	if (m_grabberEvent) {
+		Layout l;
+
+		for (int i = 0; i < NormalVideo_Elem_MaxCount; i++) {
+			ZOOM_SDK_NAMESPACE::INormalVideoRenderElement* pElementNormal = m_pNormalElemGallery[i];
+			if (pElementNormal)
+			{
+				UserInLayout us;
+				us.id = pElementNormal->GetCurrentRenderUserId();
+				us.rect = pElementNormal->GetPos();
+				// username is appended later
+
+				if (us.id != 0) {
+					l.push_back(us);
+				}
+			}
+		}
+
+		m_grabberEvent->onLayoutChanged(l);
 	}
 }
 

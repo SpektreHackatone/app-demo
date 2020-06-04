@@ -7,6 +7,7 @@
 #include "custom_ui_base.h"
 #include "custom_ui_video_flow.h"
 #include "sdk_demo_app_common.h"
+#include "LayoutGrabber.h"
 
 #define GalleryView_Need_Init -1
 #define Custom_MeetingUI_Height  740
@@ -33,6 +34,9 @@ class CCustomizeUIVideoMgr
 {
 public:
 	CCustomizeUIVideoMgr(CCustomizeInMeetingUIMgr* pMainUI);
+
+	void SetGrabberEvent(ILayoutGrabberEvent* ev);
+
 	void CreateCustomVideoContainer(ZOOM_SDK_NAMESPACE::ICustomizedUIMgr* pUIMgr, HWND hParent, RECT rc);
 	void init();
 	void uninit();
@@ -70,7 +74,7 @@ private:
 	void CalculateTotalPages();
 	void ReSubscribeNormalUser(GalleryViewSubscribeType nType);
 	void DestroyCustomVideoContainer();
-	void SetParentHWND(HWND parentHwnd) {m_hParentWnd = parentHwnd;};
+	void SetParentHWND(HWND parentHwnd) { m_hParentWnd = parentHwnd; if (m_grabberEvent) m_grabberEvent->onHwndChanged(parentHwnd);  };
 	void CalculateCurrentActiveViewRect();
 	void CalculateCurrentGalleryViewRect();
 private:
@@ -88,6 +92,8 @@ private:
 	int m_iGalleryCurrentPage;
 	int m_iVideoCountInOneColumn;
 	int m_iVideoCountInOneRow;
+
+	ILayoutGrabberEvent* m_grabberEvent;
 
 	CCustomizeUIVideoFlow m_customUIVideoFlow;
 };

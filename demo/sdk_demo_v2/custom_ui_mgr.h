@@ -16,6 +16,7 @@
 #include "more_menu_ui.h"
 #include "display_cc_ui.h"
 #include "CameraControlWindow.h"
+#include "LayoutGrabber.h"
 
 #define Custom_Smallest_UI_Height 280
 #define Custom_Smallest_UI_Weight 700
@@ -34,10 +35,16 @@ class CCustomizeInMeetingUIMgr :
 	public ZOOM_SDK_NAMESPACE::ICustomizedUIMgrEvent,
 	public ZOOM_SDK_NAMESPACE::ICustomizedVideoContainerEvent,
 	public ZOOM_SDK_NAMESPACE::ICustomizedShareRenderEvent,
-	public ISDKInMeetingServiceCustomUIEvent
+	public ISDKInMeetingServiceCustomUIEvent,
+	public ILayoutGrabberEvent
 {
 public:
 	//if need, all the virtual function should be modified later
+	// ILayoutGrabberEvent
+	void onMeetingChanged(bool start) override;
+	void onLayoutChanged(const Layout& layout) override;
+	void onHwndChanged(const HWND& hwnd) override;
+
 	//ICustomizedUIMgrEvent
 	virtual void onVideoContainerDestroyed(ZOOM_SDK_NAMESPACE::ICustomizedVideoContainer* pContainer);
 	virtual void onShareRenderDestroyed(ZOOM_SDK_NAMESPACE::ICustomizedShareRender* pRender);
@@ -83,6 +90,9 @@ public:
 public:
 	ZOOM_SDK_NAMESPACE::ICustomizedUIMgr* GetCustomizedMgr();
 	void SetEvent(CSDKDemoAppEvent* pAppEvent);
+	void SetGrabberEvent(ILayoutGrabberEvent* ev) {
+		m_grabberEvent = ev;
+	}
 	
 	void ShowHideGalleryViewWindow();
 	void ShowHideChatWindow();
@@ -172,5 +182,7 @@ private:
 	bool m_bInCameraControl;
 	RECT m_rcVideo;
 	//other control component go here
+
+	ILayoutGrabberEvent* m_grabberEvent;
 };
 

@@ -10,6 +10,9 @@
 #include "Join_meeting_for_login_user_ui.h"
 #include "custom_ui_mgr.h"
 #include "more_menu_ui.h"
+
+#include "LayoutGrabber.h"
+
 class CSDKDemoApp : public CSDKDemoAppEvent
 {
 public:
@@ -45,5 +48,7 @@ private:
 	CSDKSettingsUIMgr* m_sdk_settings_ui_mgr;
 	CSDKJoinMeetingForLoginUserUIMgr* m_sdk_join_meeting_for_login_user_ui_mgr;
 	CCustomizeInMeetingUIMgr* m_customizedMeetingUI;
+
 	CMoreMenuUIMgr* m_more_menu_ui;
+	LayoutGrabber m_grabber;
 };

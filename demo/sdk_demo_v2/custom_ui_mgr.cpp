@@ -5,6 +5,40 @@
 //#include "./wtl/atlapp.h"
 //#include "./wtl/atluser.h"
 
+void CCustomizeInMeetingUIMgr::onHwndChanged(const HWND& hwnd)
+{
+	if (m_grabberEvent) {
+		m_grabberEvent->onHwndChanged(hwnd);
+	}
+}
+
+void CCustomizeInMeetingUIMgr::onMeetingChanged(bool start)
+{
+	if (m_grabberEvent) {
+		m_grabberEvent->onMeetingChanged(start);
+	}
+}
+
+void CCustomizeInMeetingUIMgr::onLayoutChanged(const Layout& layout)
+{
+	Layout mod = layout;
+
+	// match user names here
+	if (m_pUserList) {
+		for (auto& el : mod) {
+			const auto pUser = m_pUserList->GetUserByID(el.id);
+
+			if (pUser) {
+				el.username = std::wstring(pUser->GetUserNameW());
+			}
+		}
+	}
+
+	if (m_grabberEvent) {
+		m_grabberEvent->onLayoutChanged(mod);
+	}
+}
+
 void CCustomizeInMeetingUIMgr::onVideoContainerDestroyed(ZOOM_SDK_NAMESPACE::ICustomizedVideoContainer* pContainer)
 {
 	if(m_pCustomizeUIVideoMgr)
@@ -409,7 +443,9 @@ bool CCustomizeInMeetingUIMgr::InitCustomizeUIVideoMgr()
 	if(!m_pCustomizeUIVideoMgr)
 	{
 		m_pCustomizeUIVideoMgr = new CCustomizeUIVideoMgr(this);
+		m_pCustomizeUIVideoMgr->SetGrabberEvent(this);
 	}
+
 	if(!m_pCustomizeUIVideoMgr)
 		return false;
 
@@ -483,6 +519,9 @@ void CCustomizeInMeetingUIMgr::Start()
 
 void CCustomizeInMeetingUIMgr::Stop()
 {
+	if (m_grabberEvent) {
+		m_grabberEvent->onMeetingChanged(false);
+	}
 
 	if (m_bUIIsReady && m_pCustomUIMgr)
 	{
@@ -590,6 +629,10 @@ void CCustomizeInMeetingUIMgr::HandleInMeeting()
 
 	// disable waiting room
 	m_pMeetingService->GetMeetingWaitingRoomController()->EnableWaitingRoomOnEntry(false);
+	
+	if (m_grabberEvent) {
+		m_grabberEvent->onMeetingChanged(true);
+	}
 }
 
 void CCustomizeInMeetingUIMgr::HandleMoveToWaitingRoom()
