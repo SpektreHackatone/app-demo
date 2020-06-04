@@ -234,6 +234,7 @@
     <ClCompile Include="participant_ui.cpp" />
     <ClCompile Include="schedule_meeting_ui.cpp" />
     <ClCompile Include="schedule_meeting_workflow.cpp" />
+    <ClCompile Include="ScreenShotService.cpp" />
     <ClCompile Include="sdk_demo_app.cpp" />
     <ClCompile Include="sdk_demo_v2.cpp" />
     <ClCompile Include="sdk_init_auth_ui.cpp" />
@@ -324,6 +325,7 @@
     <ClInclude Include="ShareToolbarWindow.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TimerWinApi.h" />
     <ClInclude Include="toolbar_bottom_ui.h" />
     <ClInclude Include="toolbar_bottom_workflow.h" />
     <ClInclude Include="toolbar_manager.h" />
