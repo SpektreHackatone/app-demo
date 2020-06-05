@@ -25,12 +25,12 @@ ImgConstPtr GetScreenShot(HWND window)
 	BOOL bRet = BitBlt(hDC, 0, 0, Width - ptDiff.x, Height - ptDiff.y, hScreen, 0, 0, SRCCOPY);
 
 	//пример использования скриншота (сохранение в буфер обмена)
-	
+	/*
 	OpenClipboard(NULL);
 	EmptyClipboard();
 	SetClipboardData(CF_BITMAP, hBitmap);
 	CloseClipboard();
-	
+	*/
 
 	BITMAPINFO BMI;
 	//ZeroMemory( &BMI, sizeof BMI );

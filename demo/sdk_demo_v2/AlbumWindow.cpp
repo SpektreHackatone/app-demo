@@ -67,10 +67,12 @@ void AlbumWindowThread::ThreadFunc()
             if (m_frameUpdated) {
                 frame = m_lastFrame;
                 ts_ms = m_lastFrameTsMs;
+                m_frameUpdated = false;
             }
 
             if (m_layoutUpdated) {
                 layout = &m_lastLayout;
+                m_layoutUpdated = false;
             }
             m_mutex.unlock();
         }

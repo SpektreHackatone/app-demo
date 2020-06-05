@@ -2,6 +2,8 @@
 #include "AlbumWindow.h"
 #include <SFML/Graphics.hpp>
 
+#define MAX_USERS 12
+
 class DrawerDemo : public IDrawingThing
 {
 public:
@@ -21,7 +23,8 @@ public:
 
 private:
 	ImgConstPtr m_img;
-	sf::Texture m_txt;
-	sf::Sprite m_spr;
+	sf::Texture m_txt[MAX_USERS];
+	sf::Sprite m_spr[MAX_USERS];
+	Layout m_layout;
 };
 
