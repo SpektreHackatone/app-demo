@@ -23,7 +23,5 @@ private:
 	ImgConstPtr m_img;
 	sf::Texture m_txt;
 	sf::Sprite m_spr;
-
-	sf::CircleShape m_shape;
 };
 

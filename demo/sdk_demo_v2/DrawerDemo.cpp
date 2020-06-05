@@ -7,11 +7,8 @@ DrawerDemo::~DrawerDemo()
 
 void DrawerDemo::Init()
 {
-	m_shape = sf::CircleShape(100.0f);
-	m_shape.setFillColor(sf::Color::Red);
-
-	/*ImgPtr img(new sf::Image());
-	if (img->loadFromFile("C:\Lenna.png")) {
+	ImgPtr img(new sf::Image());
+	if (img->loadFromFile("C:\\Lenna.png")) {
 		OutputDebugString(L"image loaded successfully\n");
 	}
 	else {
@@ -19,7 +16,7 @@ void DrawerDemo::Init()
 		img->create(512, 512, sf::Color::Green);
 	}
 	m_img = img;
-	m_txt.update(*m_img);*/
+	m_txt.loadFromImage(*m_img);
 }
 
 void DrawerDemo::Draw(sf::RenderWindow* window)
@@ -28,8 +25,7 @@ void DrawerDemo::Draw(sf::RenderWindow* window)
 
 	m_spr.setTexture(m_txt, true);
 
-	//window->draw(m_spr);
-	window->draw(m_shape);
+	window->draw(m_spr);
 }
 
 void DrawerDemo::PutFrame(const ImgConstPtr& frame, uint32_t ts_ms)
