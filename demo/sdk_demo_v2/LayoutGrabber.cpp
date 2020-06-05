@@ -59,10 +59,6 @@ void LayoutGrabber::onTimerFired(uint32_t ts)
 		ImgConstPtr img = GetScreenShot(m_layoutHwnd);
 		m_awThread->PutFrame(img, ts);
 	}
-
-	// fixme
-	ImgConstPtr img = GetScreenShot(nullptr);
-	m_awThread->PutFrame(img, ts);
 }
 
 void LayoutGrabber::StartTimer()

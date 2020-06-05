@@ -3,60 +3,61 @@
 
 ImgConstPtr GetScreenShot(HWND window)
 {
-	if (window) {
-		//screen of window
-		HDC hScreen = GetDC(window);
-		RECT windowParams, clientParams;
-		POINT ptDiff;
-		//client sizes
-		GetClientRect(window, &clientParams);
-		//window sizes
-		GetWindowRect(window, &windowParams);
-		DWORD Width = windowParams.right - windowParams.left;
-		DWORD Height = windowParams.bottom - windowParams.top;
+	//screen of window
+	HDC hScreen = GetDC(window);
+	RECT windowParams, clientParams;
+	POINT ptDiff;
+	//client sizes
+	GetClientRect(window, &clientParams);
+	//window sizes
+	GetWindowRect(window, &windowParams);
+	DWORD Width = windowParams.right - windowParams.left;
+	DWORD Height = windowParams.bottom - windowParams.top;
 
-		ptDiff.x = Width - clientParams.right;
-		ptDiff.y = Height - clientParams.bottom;
+	ptDiff.x = Width - clientParams.right;
+	ptDiff.y = Height - clientParams.bottom;
 
-		//контекст устройства в памяти
-		HDC hDC = CreateCompatibleDC(hScreen);
-		HBITMAP hBitmap = CreateCompatibleBitmap(hScreen, Width, Height);
-		HBITMAP hOldBitmap = (HBITMAP)SelectObject(hDC, hBitmap);
-		//Функция BitBlt выполняет передачу битовых блоков данных о цвете, соответствующих прямоугольнику пикселей из заданного исходного контекста устройства в целевой контекст устройства
-		BOOL bRet = BitBlt(hDC, 0, 0, Width - ptDiff.x, Height - ptDiff.y, hScreen, 0, 0, SRCCOPY);
+	//контекст устройства в памяти
+	HDC hDC = CreateCompatibleDC(hScreen);
+	HBITMAP hBitmap = CreateCompatibleBitmap(hScreen, Width, Height);
+	HBITMAP hOldBitmap = (HBITMAP)SelectObject(hDC, hBitmap);
+	//Функция BitBlt выполняет передачу битовых блоков данных о цвете, соответствующих прямоугольнику пикселей из заданного исходного контекста устройства в целевой контекст устройства
+	BOOL bRet = BitBlt(hDC, 0, 0, Width - ptDiff.x, Height - ptDiff.y, hScreen, 0, 0, SRCCOPY);
 
-		//пример использования скриншота (сохранение в буфер обмена)
-		/*
-		OpenClipboard(NULL);
-		EmptyClipboard();
-		SetClipboardData(CF_BITMAP, hBitmap);
-		CloseClipboard();
-		*/
+	//пример использования скриншота (сохранение в буфер обмена)
+	
+	OpenClipboard(NULL);
+	EmptyClipboard();
+	SetClipboardData(CF_BITMAP, hBitmap);
+	CloseClipboard();
+	
 
-		BITMAPINFO BMI;
-		//ZeroMemory( &BMI, sizeof BMI );
-		BMI.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-		BMI.bmiHeader.biWidth = Width;
-		BMI.bmiHeader.biHeight = -Height;
-		BMI.bmiHeader.biPlanes = 1;
-		BMI.bmiHeader.biBitCount = 32;
-		BMI.bmiHeader.biCompression = BI_RGB;
+	BITMAPINFO BMI;
+	//ZeroMemory( &BMI, sizeof BMI );
+	BMI.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	BMI.bmiHeader.biWidth = Width;
+	BMI.bmiHeader.biHeight = -Height;
+	BMI.bmiHeader.biPlanes = 1;
+	BMI.bmiHeader.biBitCount = 32;
+	BMI.bmiHeader.biCompression = BI_RGB;
 
-		//uint8_t* bitmap_data = new uint8_t[Width * Height * 4];
-		//GetDIBits(hDC, hBitmap, 0, Height, bitmap_data, &BMI, DIB_RGB_COLORS);
+	ImgPtr img(new sf::Image());
+	img->create(Width, Height);
+	uint8_t* const data = (uint8_t*)img->getPixelsPtr();
+	size_t size = Width * Height * 4;
 
-		//sf::Image frame;
-		//frame.create(Width, Height, bitmap_data);
-
-		//clean up
-		SelectObject(hDC, hOldBitmap);
-		DeleteDC(hDC);
-		ReleaseDC(NULL, hScreen);
+	GetDIBits(hDC, hBitmap, 0, Height, (uint8_t*)img->getPixelsPtr(), &BMI, DIB_RGB_COLORS);
+	for (size_t i = 0; i < size; i += 4) {
+		uint8_t tmp = data[i + 0];
+		data[i + 0] = data[i + 2];
+		data[i + 2] = tmp;
+		data[i + 3] = 255; // remove alpha
 	}
 
-	// FIXME
-	ImgPtr img(new sf::Image());
-	img->loadFromFile("Lenna.png");
+	//clean up
+	SelectObject(hDC, hOldBitmap);
+	DeleteDC(hDC);
+	ReleaseDC(NULL, hScreen);
 
 	return img;
 }

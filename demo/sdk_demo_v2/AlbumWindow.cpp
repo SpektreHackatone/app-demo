@@ -41,10 +41,10 @@ void AlbumWindowThread::PutFrame(const ImgConstPtr& img, uint32_t ts_ms)
 
 void AlbumWindowThread::ThreadFunc()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "AlbumView");
+	sf::RenderWindow window(sf::VideoMode(1700, 800), "AlbumView");
 
     // this will add some sleep() in window.display()
-    window.setFramerateLimit(50.0);
+    window.setFramerateLimit(30.0);
 
     m_drawer->Init();
 
@@ -86,7 +86,7 @@ void AlbumWindowThread::ThreadFunc()
         }
 
         // clear the window with black color
-        window.clear(sf::Color::Black);
+        window.clear(sf::Color::Green);
 
         // draw everything here...
         m_drawer->Draw(&window);

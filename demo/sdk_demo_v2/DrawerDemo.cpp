@@ -7,16 +7,6 @@ DrawerDemo::~DrawerDemo()
 
 void DrawerDemo::Init()
 {
-	ImgPtr img(new sf::Image());
-	if (img->loadFromFile("C:\\Lenna.png")) {
-		OutputDebugString(L"image loaded successfully\n");
-	}
-	else {
-		OutputDebugString(L"failed to load image\n");
-		img->create(512, 512, sf::Color::Green);
-	}
-	m_img = img;
-	m_txt.loadFromImage(*m_img);
 }
 
 void DrawerDemo::Draw(sf::RenderWindow* window)
@@ -30,9 +20,10 @@ void DrawerDemo::Draw(sf::RenderWindow* window)
 
 void DrawerDemo::PutFrame(const ImgConstPtr& frame, uint32_t ts_ms)
 {
-	//OutputDebugString(L"Received new frame\n");
-	//m_img = frame;
-	//m_txt.update(*m_img);
+	m_img = frame;
+	if (!m_txt.loadFromImage(*m_img, sf::IntRect(0, 0, 500, 500))) {
+		OutputDebugString(L"failed to load texture\n");
+	}
 }
 
 void DrawerDemo::PutLayout(const Layout& layout)
