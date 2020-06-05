@@ -58,6 +58,7 @@ ImgConstPtr GetScreenShot(HWND window)
 	SelectObject(hDC, hOldBitmap);
 	DeleteDC(hDC);
 	ReleaseDC(NULL, hScreen);
+	DeleteObject(hBitmap);
 
 	return img;
 }
