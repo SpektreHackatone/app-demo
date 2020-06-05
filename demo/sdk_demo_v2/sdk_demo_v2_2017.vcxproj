@@ -214,6 +214,7 @@
     <ClCompile Include="custom_ui_video_mgr.cpp" />
     <ClCompile Include="dial_in_country_ui.cpp" />
     <ClCompile Include="display_cc_ui.cpp" />
+    <ClCompile Include="DrawerDemo.cpp" />
     <ClCompile Include="HttpRequestHelper.cpp" />
     <ClCompile Include="init_auth_sdk_workflow.cpp" />
     <ClCompile Include="invitation_ui.cpp" />
@@ -289,6 +290,7 @@
     <ClInclude Include="custom_ui_video_mgr.h" />
     <ClInclude Include="dial_in_country_ui.h" />
     <ClInclude Include="display_cc_ui.h" />
+    <ClInclude Include="DrawerDemo.h" />
     <ClInclude Include="HttpRequestHelper.h" />
     <ClInclude Include="init_auth_sdk_workflow.h" />
     <ClInclude Include="invitation_ui.h" />
@@ -312,6 +314,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="schedule_meeting_ui.h" />
     <ClInclude Include="schedule_meeting_workflow.h" />
+    <ClInclude Include="ScreenShotService.h" />
     <ClInclude Include="sdk_demo_app.h" />
     <ClInclude Include="sdk_demo_app_common.h" />
     <ClInclude Include="sdk_demo_v2.h" />

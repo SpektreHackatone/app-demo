@@ -3,7 +3,11 @@
 #include <string>
 #include <vector>
 #include "stdafx.h"
-#include "AlbumWindow.h"
+
+#define TIMER_RATE 30
+
+class AlbumWindowThread;
+class DrawerDemo;
 
 struct UserInLayout {
 	unsigned id = 0;
@@ -20,21 +24,35 @@ public:
 	virtual void onHwndChanged(const HWND& hwnd) = 0;
 };
 
+class ILayoutGrabberAndFrameEvent : public ILayoutGrabberEvent {
+public:
+	virtual void onFrameReceived() = 0;
+};
+
 class LayoutGrabber : public ILayoutGrabberEvent
 {
 public:
 	LayoutGrabber();
+	~LayoutGrabber();
 
 	void onMeetingChanged(bool start) override;
 	void onLayoutChanged(const Layout& layout) override;
 	void onHwndChanged(const HWND& hwnd) override;
 
-	void onTimerFired();
-
 private:
-	HWND m_layoutHwnd;
-	Layout m_layout;
+	void onTimerFired(uint32_t ts);
 
-	AlbumWindowThread m_awThread;
+	void StartTimer();
+	void StopTimer();
+
+	static void CALLBACK TimerWrapper(HWND hwnd, UINT msg, UINT idTimer, DWORD dwTime);
+
+	static LayoutGrabber* m_timerGrabber;
+
+	HWND m_layoutHwnd;
+	UINT_PTR m_timerId;
+
+	DrawerDemo* m_drawerDemo;
+	AlbumWindowThread* m_awThread;
 };
 
