@@ -22,6 +22,10 @@ BasicGridLayout::BasicGridLayout(int width, int height, int num_cols, int num_ro
 	, m_yScale(y_scale) {}
 
 sf::Vector2f BasicGridLayout::GetPositionFor(int i) const {
+	if (m_fillOrder.size() > 0) {
+		i = m_fillOrder[i];
+	}
+
 	sf::Vector2f frame_size = GetFrameSize();
 	sf::Vector2f offsets;
 	offsets.x = (m_width - m_numCols * frame_size.x) / m_numCols / 2;
