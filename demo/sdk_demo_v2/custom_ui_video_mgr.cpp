@@ -215,7 +215,7 @@ void CCustomizeUIVideoMgr::ShowGalleryViewVideo(GalleryViewSubscribeType nType)
 
 	// form layout info and send it to grabber
 	if (m_grabberEvent) {
-		Layout l;
+		LayoutInfo l;
 
 		for (int i = 0; i < NormalVideo_Elem_MaxCount; i++) {
 			ZOOM_SDK_NAMESPACE::INormalVideoRenderElement* pElementNormal = m_pNormalElemGallery[i];

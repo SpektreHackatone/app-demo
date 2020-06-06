@@ -15,12 +15,12 @@ struct UserInLayout {
 	RECT rect{ 0 };
 };
 
-typedef std::vector<UserInLayout> Layout;
+typedef std::vector<UserInLayout> LayoutInfo;
 
 class ILayoutGrabberEvent {
 public:
 	virtual void onMeetingChanged(bool start) = 0;
-	virtual void onLayoutChanged(const Layout& layout) = 0;
+	virtual void onLayoutChanged(const LayoutInfo& layout) = 0;
 	virtual void onHwndChanged(const HWND& hwnd) = 0;
 };
 
@@ -36,7 +36,7 @@ public:
 	~LayoutGrabber();
 
 	void onMeetingChanged(bool start) override;
-	void onLayoutChanged(const Layout& layout) override;
+	void onLayoutChanged(const LayoutInfo& layout) override;
 	void onHwndChanged(const HWND& hwnd) override;
 
 private:

@@ -1,19 +1,35 @@
 #include "DrawerDemo.h"
+#include "SceneElements.h"
+#include "SceneLayoutImpls.h"
 
 DrawerDemo::~DrawerDemo()
 {
 	OutputDebugString(L"WTTF!!!\n");
 }
 
-void DrawerDemo::Init()
+void DrawerDemo::Init(sf::RenderWindow* window)
 {
+	m_scene = Scene::Ptr(new Scene());
+
+	auto size = window->getSize();
+	ILayout::Ptr layout = ILayout::Ptr(new BasicGridLayout(size.x, size.y, 4, 2));
+
+	m_scene->SetLayout(layout);
+
+	LayoutInfo l(8);
+	for (unsigned i = 0; i < 8; i++) {
+		UserDrawable::Ptr user = layout->UserAt(i);
+		l.push_back(UserInLayout{ i, L"Hello", RECT{0} });
+	}
+	m_layout = l;
 }
 
 void DrawerDemo::Draw(sf::RenderWindow* window)
 {
+	window->draw(*m_scene);
 	//OutputDebugString(L"draw started\n");
 
-	const int width = 400;
+	/*const int width = 400;
 	const int height = 300;
 
 	for (unsigned i = 0; i < MAX_USERS; i++) {
@@ -26,14 +42,17 @@ void DrawerDemo::Draw(sf::RenderWindow* window)
 		m_spr[i].setTexture(m_txt[i], true);
 		m_spr[i].setPosition(x, 0.0);
 		window->draw(m_spr[i]);
-	}
+	}*/
 }
 
 void DrawerDemo::PutFrame(const ImgConstPtr& frame, uint32_t ts_ms)
 {
 	m_img = frame;
+	auto layout = m_scene->GetLayout();
 
 	for (unsigned i = 0; i < m_layout.size(); i++) {
+		UserDrawable::Ptr user = layout->UserAt(i);
+
 		sf::IntRect rect;
 		const auto& l = m_layout[i];
 
@@ -42,13 +61,12 @@ void DrawerDemo::PutFrame(const ImgConstPtr& frame, uint32_t ts_ms)
 		rect.width = l.rect.right - l.rect.left;
 		rect.height = l.rect.bottom - l.rect.top;
 
-		if (!m_txt[i].loadFromImage(*m_img, rect)) {
-			OutputDebugString(L"failed to load texture\n");
-		}
+		user->GetVideo()->SetImage(frame, rect);
 	}
 }
 
-void DrawerDemo::PutLayout(const Layout& layout)
+void DrawerDemo::PutLayout(const LayoutInfo& layout)
 {
 	m_layout = layout;
+	m_scene->GetLayout()->Clear();
 }

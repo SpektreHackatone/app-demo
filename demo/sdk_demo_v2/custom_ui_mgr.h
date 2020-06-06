@@ -42,7 +42,7 @@ public:
 	//if need, all the virtual function should be modified later
 	// ILayoutGrabberEvent
 	void onMeetingChanged(bool start) override;
-	void onLayoutChanged(const Layout& layout) override;
+	void onLayoutChanged(const LayoutInfo& layout) override;
 	void onHwndChanged(const HWND& hwnd) override;
 
 	//ICustomizedUIMgrEvent

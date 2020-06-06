@@ -22,7 +22,7 @@ void AlbumWindowThread::Stop()
 	m_thread.wait();
 }
 
-void AlbumWindowThread::PutLayout(const Layout& l)
+void AlbumWindowThread::PutLayout(const LayoutInfo& l)
 {
     m_mutex.lock();
     m_lastLayout = l;
@@ -41,12 +41,12 @@ void AlbumWindowThread::PutFrame(const ImgConstPtr& img, uint32_t ts_ms)
 
 void AlbumWindowThread::ThreadFunc()
 {
-	sf::RenderWindow window(sf::VideoMode(1700, 800), "AlbumView");
+	sf::RenderWindow window(sf::VideoMode(1200, 750), "AlbumView");
 
     // this will add some sleep() in window.display()
     window.setFramerateLimit(30.0);
 
-    m_drawer->Init();
+    m_drawer->Init(&window);
 
 	while (m_isRunning && window.isOpen()) {
         // check all the window's events that were triggered since the last iteration of the loop
@@ -61,7 +61,7 @@ void AlbumWindowThread::ThreadFunc()
         // check if frame data or layout is updated
         ImgConstPtr frame;
         uint32_t ts_ms = 0;
-        const Layout* layout = nullptr;
+        const LayoutInfo* layout = nullptr;
         {
             m_mutex.lock();
             if (m_frameUpdated) {

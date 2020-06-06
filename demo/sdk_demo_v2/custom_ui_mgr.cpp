@@ -19,9 +19,9 @@ void CCustomizeInMeetingUIMgr::onMeetingChanged(bool start)
 	}
 }
 
-void CCustomizeInMeetingUIMgr::onLayoutChanged(const Layout& layout)
+void CCustomizeInMeetingUIMgr::onLayoutChanged(const LayoutInfo& layout)
 {
-	Layout mod = layout;
+	LayoutInfo mod = layout;
 
 	// match user names here
 	if (m_pUserList) {

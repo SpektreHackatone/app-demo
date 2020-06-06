@@ -235,6 +235,8 @@
     <ClCompile Include="more_menu_ui.cpp" />
     <ClCompile Include="ParticipantPopMenu.cpp" />
     <ClCompile Include="participant_ui.cpp" />
+    <ClCompile Include="SceneElements.cpp" />
+    <ClCompile Include="SceneLayoutImpls.cpp" />
     <ClCompile Include="schedule_meeting_ui.cpp" />
     <ClCompile Include="schedule_meeting_workflow.cpp" />
     <ClCompile Include="ScreenShotService.cpp" />
@@ -291,6 +293,7 @@
     <ClInclude Include="dial_in_country_ui.h" />
     <ClInclude Include="display_cc_ui.h" />
     <ClInclude Include="DrawerDemo.h" />
+    <ClInclude Include="DrawingCommon.h" />
     <ClInclude Include="HttpRequestHelper.h" />
     <ClInclude Include="init_auth_sdk_workflow.h" />
     <ClInclude Include="invitation_ui.h" />
@@ -312,6 +315,8 @@
     <ClInclude Include="ParticipantPopMenu.h" />
     <ClInclude Include="participant_ui.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SceneElements.h" />
+    <ClInclude Include="SceneLayoutImpls.h" />
     <ClInclude Include="schedule_meeting_ui.h" />
     <ClInclude Include="schedule_meeting_workflow.h" />
     <ClInclude Include="ScreenShotService.h" />

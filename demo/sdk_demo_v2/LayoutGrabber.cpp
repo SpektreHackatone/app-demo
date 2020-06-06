@@ -2,7 +2,6 @@
 #include "AlbumWindow.h"
 #include "DrawerDemo.h"
 #include "ScreenShotService.h"
-#include <cassert>
 
 LayoutGrabber* LayoutGrabber::m_timerGrabber;
 
@@ -32,7 +31,7 @@ void LayoutGrabber::onHwndChanged(const HWND& hwnd)
 	DisableMinimaizeBtn(hwnd);
 }
 
-void LayoutGrabber::onLayoutChanged(const Layout& layout)
+void LayoutGrabber::onLayoutChanged(const LayoutInfo& layout)
 {
 	OutputDebugString(L"layout changed\n");
 	m_awThread->PutLayout(layout);
