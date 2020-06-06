@@ -14,7 +14,11 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 	auto size = window->getSize();
 	ILayout::Ptr layout = ILayout::Ptr(new BasicGridLayout(size.x, size.y, 4, 2));
 
+	Background::Ptr bg = Background::Ptr(new Background(sf::Vector2f(size.x, size.y)));
+	bg->LoadFromFile("backgrounds/background1.jpg");
+
 	m_scene->SetLayout(layout);
+	m_scene->SetBackground(bg);
 
 	LayoutInfo l(8);
 	for (unsigned i = 0; i < 8; i++) {

@@ -18,16 +18,34 @@ public:
 	virtual bool Collides(const Collidable& other) const;
 };
 
-class Background : public sf::Drawable {
+class Background : public sf::Drawable, public sf::Transformable {
 public:
 	using Ptr = std::shared_ptr<Background>;
 
+	Background(const sf::Vector2f& size) : m_size(size) {}
+
+	void LoadFromFile(const std::string& path);
 	void SetImage(const ImgConstPtr& image);
+
+	void SetSize(const sf::Vector2f& size) {
+		m_size = size;
+	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
+	void ScaleAndFit();
+
+	sf::Vector2f m_size;
+
 	ImgConstPtr m_image;
+
+	static const size_t kNumRows = 4;
+	static const size_t kNumColumns = 4;
+	static const size_t kNumElems = kNumRows * kNumColumns;
+
+	sf::Texture m_txt[kNumElems];
+	sf::Sprite m_sprite[kNumElems];
 };
 
 class IFlyingObject : public sf::Drawable, public sf::Transformable, public Collidable {

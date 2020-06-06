@@ -1,7 +1,74 @@
 #include "SceneElements.h"
+#include <Windows.h>
 
 bool Collidable::Collides(const Collidable& other) const {
 	return GetGlobalBounds().intersects(other.GetGlobalBounds());
+}
+
+// #############################################################################
+// Background
+
+void Background::LoadFromFile(const std::string& path) {
+	ImgPtr img = ImgPtr(new sf::Image());
+	if (!img->loadFromFile(path)) {
+		OutputDebugString(L"failed to load background\n");
+		return;
+	}
+
+	SetImage(img);
+}
+
+void Background::SetImage(const ImgConstPtr& image) {
+	m_image = image;
+
+	size_t width = m_image->getSize().x;
+	size_t height = m_image->getSize().y;
+
+	size_t p_width = m_image->getSize().x / kNumColumns;
+	size_t p_height = m_image->getSize().y / kNumRows;
+
+	const float scale_x = m_size.x / float(width);
+	const float scale_y = m_size.y / float(height);
+
+	float fin_scale = std::max(scale_x, scale_y);
+
+	// get offset
+	sf::Vector2f offset;
+
+	offset.x = -(width * fin_scale - m_size.x) / 2;
+	offset.y = -(height * fin_scale - m_size.y) / 2;
+
+	setScale(fin_scale, fin_scale);
+	setPosition(offset);
+
+	// fill in textures
+	for (unsigned i = 0; i < kNumRows; i++) {
+		for (unsigned j = 0; j < kNumColumns; j++) {
+			const size_t idx = i * kNumColumns + j;
+			sf::IntRect rect(j * p_width, i * p_height, p_width, p_height);
+
+			if (!m_txt[idx].loadFromImage(*image, rect)) {
+				OutputDebugString(L"failed to load background fragment");
+			}
+
+			m_txt[idx].setSmooth(true);
+
+			m_sprite[idx].setTexture(m_txt[idx]);
+			m_sprite[idx].setPosition(j * p_width, i * p_height);
+		}
+	}
+}
+
+void Background::ScaleAndFit() {
+
+}
+
+void Background::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	states.transform *= getTransform();
+
+	for (size_t i = 0; i < kNumElems; i++) {
+		target.draw(m_sprite[i], states);
+	}
 }
 
 // #############################################################################
@@ -15,14 +82,23 @@ void UserVideo::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 void UserVideo::SetImage(const ImgConstPtr& image, const sf::IntRect& rect) {
 	m_image = image;
 	m_txt.loadFromImage(*image, rect);
-	m_sprite.setTexture(m_txt, false);
+	m_txt.setSmooth(true);
+	m_sprite.setTexture(m_txt);
 
 	// scale vertically to fit in center
 	float scale = m_size.y / rect.height;
 	setScale(scale, scale);
 
+	sf::IntRect crop;
+	crop.top = 0;
+	crop.left = std::round(rect.width / 2 - m_size.x / scale / 2);
+	crop.width = std::round(m_size.x / scale);
+	crop.height = m_size.y;
+
+	m_sprite.setTextureRect(crop);
+
 	// move to fit in center
-	setOrigin(rect.width / 2 - m_size.x / 2, 0);
+	//setPosition(, 0);
 }
 
 // #############################################################################
