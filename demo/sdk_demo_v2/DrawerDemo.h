@@ -2,10 +2,12 @@
 #include "AlbumWindow.h"
 #include <SFML/Graphics.hpp>
 #include "SceneElements.h"
+#include "MotionDetectorSingleRect.h"
 
 class DrawerDemo : public IDrawingThing
 {
 public:
+	DrawerDemo();
 	virtual ~DrawerDemo();
 
 	// this function is called once when window is opened
@@ -22,11 +24,16 @@ public:
 
 	void PutChatMessage(const std::wstring& str) override;
 
+	void OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2);
+
 private:
 	Scene::Ptr m_scene;
 	sf::Vector2u m_windowSize;
 
 	ImgConstPtr m_img;
 	LayoutInfo m_layout;
+
+	MotionDetectorWithInterestRects m_detector;
+	bool m_detectorInitialized;
 };
 

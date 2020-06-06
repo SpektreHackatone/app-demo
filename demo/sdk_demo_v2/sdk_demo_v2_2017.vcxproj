@@ -152,7 +152,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>DuiLib_2017.lib;sdk.lib;sfml-system.lib;sfml-window.lib;sfml-graphics.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DuiLib_2017.lib;sdk.lib;sfml-system.lib;sfml-window.lib;sfml-graphics.lib;opencv_core430.lib;opencv_highgui430.lib;opencv_imgproc430.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\bin\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>..\opencv\x86\vc16\lib;..\SFML-2.5.1\lib;..\..\lib;..\duilib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -234,6 +234,7 @@
     <ClCompile Include="more_features_ui.cpp" />
     <ClCompile Include="more_features_workflow.cpp" />
     <ClCompile Include="more_menu_ui.cpp" />
+    <ClCompile Include="MotionDetectorSingleRect.cpp" />
     <ClCompile Include="ParticipantPopMenu.cpp" />
     <ClCompile Include="participant_ui.cpp" />
     <ClCompile Include="SceneElements.cpp" />
@@ -315,6 +316,7 @@
     <ClInclude Include="more_features_ui.h" />
     <ClInclude Include="more_features_workflow.h" />
     <ClInclude Include="more_menu_ui.h" />
+    <ClInclude Include="MotionDetectorSingleRect.h" />
     <ClInclude Include="ParticipantPopMenu.h" />
     <ClInclude Include="participant_ui.h" />
     <ClInclude Include="Resource.h" />

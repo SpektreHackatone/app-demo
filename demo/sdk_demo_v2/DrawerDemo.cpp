@@ -3,6 +3,10 @@
 #include "SceneLayoutImpls.h"
 #include "AnimatedSprite.h"
 
+DrawerDemo::DrawerDemo()
+	: m_detector()
+	, m_detectorInitialized(false) {}
+
 DrawerDemo::~DrawerDemo()
 {
 	OutputDebugString(L"WTTF!!!\n");
@@ -70,6 +74,17 @@ void DrawerDemo::PutFrame(const ImgConstPtr& frame, uint32_t ts_ms)
 		rect.height = l.rect.bottom - l.rect.top;
 
 		user->GetVideo()->SetImage(frame, rect);
+
+		if (m_detectorInitialized && i == 0) {
+			cv::Size size;
+			size.width = frame->getSize().x;
+			size.height = frame->getSize().y;
+			cv::Mat cv_img(size, CV_8UC4, (void*)frame->getPixelsPtr());
+			cv::Mat roi(cv_img(cv::Rect(rect.left, rect.top, rect.width, rect.height)));
+
+			m_detector.Detect(roi, ts_ms, 
+				[this](MDEventType ev, cv::Point p1, cv::Point p2) { OnMotionDetected(ev, p1, p2); });
+		}
 	}
 }
 
@@ -82,7 +97,14 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 	for (unsigned i = 0; i < m_layout.size(); i++) {
 		UserDrawable::Ptr user = m_scene->GetLayout()->UserAt(i);
 		m_scene->AddCollidable(user);
+
+		if (!m_detectorInitialized) {
+			const auto& sz = m_layout[i].rect;
+			m_detectorInitialized = true;
+			m_detector.SetRects(getStandart2Rects(cv::Size(sz.right - sz.left, sz.bottom - sz.top)));
+		}
 	}
+
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
 		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
@@ -100,4 +122,9 @@ void DrawerDemo::PutChatMessage(const std::wstring& str)
 	tomato->SetSpeed(sf::Vector2f(-5, -2.5));
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
 	m_scene->AddFlyingObject(tomato);
+}
+
+void DrawerDemo::OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2)
+{
+
 }
