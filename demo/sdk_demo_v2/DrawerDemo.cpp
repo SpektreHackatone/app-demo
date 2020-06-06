@@ -96,7 +96,10 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 
 	for (unsigned i = 0; i < m_layout.size(); i++) {
 		UserDrawable::Ptr user = m_scene->GetLayout()->UserAt(i);
-		m_scene->AddCollidable(user);
+
+		if (i != 0) {
+			m_scene->AddCollidable(user);
+		}
 
 		if (!m_detectorInitialized) {
 			const auto& sz = m_layout[i].rect;
@@ -124,7 +127,63 @@ void DrawerDemo::PutChatMessage(const std::wstring& str)
 	m_scene->AddFlyingObject(tomato);
 }
 
+IFlyingObject::Ptr DrawerDemo::SpawnTomato(const cv::Point& p1) {
+	UserDrawable::Ptr user = m_scene->GetLayout()->UserAt(0);
+
+	float pos_x = user->getPosition().x + p1.x;
+	float pos_y = user->getPosition().y + p1.y;
+
+	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
+		"images/tomato_128_128.png",
+		sf::IntRect(0, 0, 128, 128),
+		"images/klaksa2.png",
+		sf::Vector2f(0.3, 0.3)));
+	tomato->setScale(0.3, 0.3);
+	tomato->setPosition(pos_x, pos_y);
+	tomato->SetSpeed(sf::Vector2f(0, 0));
+
+	m_scene->AddFlyingObject(tomato);
+
+	return tomato;
+}
+
+void DrawerDemo::LaunchTomato(const IFlyingObject::Ptr& obj, const cv::Point& p1, const cv::Point& p2) {
+	float dx = p2.x - p1.x;
+	float dy = p2.y - p1.y;
+
+	const float scale = 0.5;
+
+	obj->SetSpeed(sf::Vector2f(dx * scale, dy * scale));
+}
+
 void DrawerDemo::OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2)
 {
-
+	OutputDebugString(L"Motion detected\n");
+	switch (ev) {
+	case MDEventType::IN1:
+		if (!m_leftLauncher) {
+			m_leftLauncher = SpawnTomato(p1);
+		}
+		break;
+	case MDEventType::IN2:
+		if (!m_rightLauncher) {
+			m_rightLauncher = SpawnTomato(p2);
+		}
+		break;
+	case MDEventType::OUT1:
+		if (m_leftLauncher) {
+			LaunchTomato(m_leftLauncher, p1, p2);
+			m_leftLauncher = nullptr;
+		}
+		break;
+	case MDEventType::OUT2:
+		if (m_rightLauncher) {
+			LaunchTomato(m_rightLauncher, p1, p2);
+			m_rightLauncher = nullptr;
+		}
+		break;
+	case MDEventType::IN12:
+	case MDEventType::OUT12:
+		break;
+	}
 }

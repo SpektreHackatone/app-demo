@@ -27,11 +27,16 @@ public:
 	void OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2);
 
 private:
+	IFlyingObject::Ptr SpawnTomato(const cv::Point& p);
+	void LaunchTomato(const IFlyingObject::Ptr& obj, const cv::Point& p1, const cv::Point& p2);
+
 	Scene::Ptr m_scene;
 	sf::Vector2u m_windowSize;
 
 	ImgConstPtr m_img;
 	LayoutInfo m_layout;
+
+	IFlyingObject::Ptr m_leftLauncher, m_rightLauncher;
 
 	MotionDetectorWithInterestRects m_detector;
 	bool m_detectorInitialized;
