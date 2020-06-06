@@ -193,6 +193,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AlbumWindow.cpp" />
+    <ClCompile Include="AnimatedSprite.cpp" />
     <ClCompile Include="AnnotateBarWindow.cpp" />
     <ClCompile Include="AnnotateClearWindow.cpp" />
     <ClCompile Include="AnnotateDrawWindow.cpp" />
@@ -265,11 +266,13 @@
     <ClCompile Include="toolbar_manager.cpp" />
     <ClCompile Include="user_manager.cpp" />
     <ClCompile Include="util_window.cpp" />
+    <ClCompile Include="VectorHelper.cpp" />
     <ClCompile Include="ViewOptionsWindow.cpp" />
     <ClCompile Include="zoomHmacSHA256.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlbumWindow.h" />
+    <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="AnnotateBarWindow.h" />
     <ClInclude Include="AnnotateClearWindow.h" />
     <ClInclude Include="AnnotateDrawWindow.h" />
@@ -343,6 +346,7 @@
     <ClInclude Include="toolbar_manager.h" />
     <ClInclude Include="user_manager.h" />
     <ClInclude Include="util_window.h" />
+    <ClInclude Include="VectorHelper.h" />
     <ClInclude Include="ViewOptionsWindow.h" />
     <ClInclude Include="zoomHmacSHA256.h" />
   </ItemGroup>
