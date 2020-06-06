@@ -2,7 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 
-const double MotionDetectorWithInterestRects::kInAreaCoef{ 0.2 };
+const double MotionDetectorWithInterestRects::kInAreaCoef{ 0.25 };
 const double MotionDetectorWithInterestRects::kMotionOutAreaCoef{ 0.02 };
 const double MotionDetectorWithInterestRects::kOutAreaCoef{ 0.05 };
 
@@ -75,6 +75,23 @@ namespace {
 MotionDetectorWithInterestRects::MotionDetectorWithInterestRects(int detection_period) :
 	kInDetectionPeriod(detection_period)
 {
+	cv::namedWindow("in_motion0");
+	cv::moveWindow("in_motion0", 100, 500);
+
+	cv::namedWindow("in_motion1");
+	cv::moveWindow("in_motion1", 300, 500);
+
+	cv::namedWindow("leave0");
+	cv::moveWindow("leave0", 100, 650);
+
+	cv::namedWindow("leave1");
+	cv::moveWindow("leave1", 300, 650);
+
+	cv::namedWindow("out_motion0");
+	cv::moveWindow("out_motion0", 100, 800);
+
+	cv::namedWindow("out_motion1");
+	cv::moveWindow("out_motion1", 300, 800);
 }
 
 void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc func) {
@@ -86,7 +103,7 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 		return;
 	}
 
-	for (size_t i = 0; i < zones_.size();++i) {
+	for (size_t i = 0; i < zones_.size(); ++i) {
 		if (zones_[i].out_in_progress_ && (ts - zones_[i].ts_of_out > kTimeout)) {
 			zones_[i].out_in_progress_ = false;
 		}
@@ -100,6 +117,10 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 			if (zones_[i].last_images_.size() >= 2) {
 
 				auto motion_img = getImgsDiff(zones_[i].background_, zones_[i].last_images_.front(), zones_[i].last_images_.back(), MotionDetectorWithInterestRects::kThresholdForIn);
+
+				cv::imshow("in_motion" + std::to_string(i), motion_img);
+				cv::waitKey(1);
+
 				auto has_motion_and_center = DetectMotion(motion_img, MotionDetectorWithInterestRects::kInAreaCoef);
 
 				if (has_motion_and_center.first) {
@@ -109,16 +130,15 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 					zones_[i].center_of_in_.y += interest_rects_[i].y;
 
 					if (i == 0)
-						func(MDEventType::IN1, cv::Point(), cv::Point());
+						func(MDEventType::IN1, zones_[i].center_of_in_, cv::Point());
 					if (i == 1)
-						func(MDEventType::IN2, cv::Point(), cv::Point());
-
+						func(MDEventType::IN2, zones_[i].center_of_in_, cv::Point());
 				}
 
 				zones_[i].last_images_.pop_front();
 
 			}
-		} 
+		}
 
 		if (zones_[i].in_detected_) {
 
@@ -132,6 +152,10 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 				//Движение на выход 
 				{
 					auto diff = getImgsDiff(zones_[i].last_images_[0], zones_[i].last_images_[1], zones_[i].last_images_[2], MotionDetectorWithInterestRects::kThresholdForMotionOut);
+
+					cv::imshow("out_motion" + std::to_string(i), diff);
+					cv::waitKey(1);
+
 					auto has_motion_and_center = DetectMotion(diff, MotionDetectorWithInterestRects::kMotionOutAreaCoef);
 					if (has_motion_and_center.first)
 						zones_[i].last_motion_out_center_ = has_motion_and_center.second;
@@ -140,6 +164,10 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 				//Наличие в зоне инородных элементов
 				{
 					auto diff_background = getImgsDiff(zones_[i].background_, zones_[i].last_images_[0], zones_[i].last_images_[1], MotionDetectorWithInterestRects::kThresholdForOut);
+
+					cv::imshow("leave" + std::to_string(i), diff_background);
+					cv::waitKey(1);
+
 					auto has_out_motion_and_center = DetectMotion(diff_background, MotionDetectorWithInterestRects::kOutAreaCoef);
 
 					if (!has_out_motion_and_center.first) {
@@ -170,11 +198,11 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 	}
 
 	if (zones_[0].in_detected_ && zones_[1].in_detected_ && !in12_signaled_) {
-		func(MDEventType::IN12, cv::Point(), cv::Point());
+		func(MDEventType::IN12, zones_[0].center_of_in_, zones_[1].center_of_in_);
 		in12_signaled_ = true;
 	}
 
-	/* //отрисовка
+	//отрисовка
 
 	cv::rectangle(img, interest_rects_[0], cv::Scalar(0, 255, 0));
 	cv::rectangle(img, interest_rects_[1], cv::Scalar(0, 255, 0));
@@ -197,7 +225,7 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 	cv::imshow("img", img);
 	cv::waitKey(1);
 
-	*/
+
 }
 
 std::string EventTypeToString(MDEventType type)
@@ -231,6 +259,9 @@ std::string EventTypeToString(MDEventType type)
 
 InterestRects getStandart2Rects(cv::Size size)
 {
-	return InterestRects{ cv::Rect(0.1*size.width,0.1 * size.height,0.25 * size.width,0.25 * size.height ), 
-		cv::Rect(0.6 * size.width,0.1 * size.height,0.25 * size.width,0.25 * size.height ) };
+	return InterestRects{ cv::Rect(0.1 * size.width, 0.1 * size.height, 0.25 * size.width, 0.35 * size.height),
+	cv::Rect(0.6 * size.width, 0.1 * size.height, 0.25 * size.width, 0.35 * size.height) };
+
+	//return InterestRects{ cv::Rect(0.1 * size.width,0.1 * size.height,0.25 * size.width,0.25 * size.height),
+	//	cv::Rect(0.6 * size.width,0.1 * size.height,0.25 * size.width,0.25 * size.height) };
 }

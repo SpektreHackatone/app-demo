@@ -52,7 +52,7 @@ public:
 	/// <param name="ts"> - в миллисекундах</param>
 	void Detect(cv::Mat img, int ts, SignalFunc func);
 
-	static const int kThresholdForIn{ 15 };
+	static const int kThresholdForIn{ 20 };
 	static const int kThresholdForMotionOut{ 5 };
 	static const int kThresholdForOut{ 5 };
 
@@ -64,7 +64,7 @@ public:
 	static const double kOutAreaCoef;
 
 	const int kInDetectionPeriod; //в ms
-	static const int kOutDetectionPeriod{ 100 }; //в ms
+	static const int kOutDetectionPeriod{ 30 }; //в ms
 
 
 private:
