@@ -20,12 +20,13 @@ AnimatedSprite::AnimatedSprite(
 {
 	_texture.loadFromFile(spriteFile);
 	_sprite.setTexture(_texture);
-	_meta = getSpriteMetaData(*_sprite.getTexture(), _rect.width, _rect.height);
-	_sprite.setOrigin(sf::Vector2f(_rect.width * _sprite.getScale().x / 2, _rect.height * _sprite.getScale().y / 2));
-}
+	_sprite.setTextureRect(_rect);
 
-AnimatedSprite::~AnimatedSprite()
-{
+	_meta = getSpriteMetaData(*_sprite.getTexture(), _rect.width, _rect.height);
+
+	auto b = _sprite.getGlobalBounds();
+
+	_sprite.setOrigin(sf::Vector2f(b.width / 2, b.height / 2));
 }
 
 void AnimatedSprite::nextSprite()
@@ -83,66 +84,6 @@ SpriteMetaData AnimatedSprite::getSpriteMetaData(sf::Texture texture, int width,
 	return result;
 }
 
-void AnimatedSprite::setScale(sf::Vector2f scale)
-{
-	_sprite.setScale(scale);
-}
-
-sf::Vector2f AnimatedSprite::getLocalPosition()
-{
-	sf::FloatRect rect = _sprite.getGlobalBounds();
-	return sf::Vector2f(rect.left + rect.width / 2, rect.top + rect.height / 2);
-}
-
-sf::Vector2f AnimatedSprite::getGlobalPosition()
-{
-	return _sprite.getPosition();
-}
-
-float AnimatedSprite::getRotation()
-{
-	return _sprite.getRotation() + _baseRotation;
-}
-
-void AnimatedSprite::setRotation(float angle)
-{
-	return _sprite.setRotation(angle + _baseRotation);
-}
-
-void AnimatedSprite::moveTo(sf::Vector2f target)
-{
-	sf::Vector2f pos = getLocalPosition();
-	float distance = sqrt(pow(target.x - pos.x, 2) + pow(target.y - pos.y, 2));
-	float rot = getRotation();
-	float angle = DegToRad(rot - 180);
-	if (distance < _speed)
-	{
-		return;
-	}
-	if (std::abs(angle) < M_PI / 2)
-	{
-		pos.x -= fabs(_speed * std::cos(angle));
-	}
-	else
-	{
-		if (abs(angle) > M_PI / 2)
-		{
-			pos.x += std::fabs(_speed * std::cos(angle));
-		}
-	}
-	if (angle > 0 && angle < M_PI)
-	{
-		pos.y -= std::fabs(_speed * std::sin(angle));
-	}
-	else
-	{
-		if (angle < 0 || angle > M_PI)
-		{
-			pos.y += std::fabs(_speed * std::sin(angle));
-		}
-	}
-	_sprite.setPosition(pos);
-}
 
 sf::FloatRect AnimatedSprite::GetGlobalBounds() const {
 	return getTransform().transformRect(_sprite.getGlobalBounds());

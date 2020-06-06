@@ -38,9 +38,6 @@ void Background::SetImage(const ImgConstPtr& image) {
 	offset.x = -(width * fin_scale - m_size.x) / 2;
 	offset.y = -(height * fin_scale - m_size.y) / 2;
 
-	setScale(fin_scale, fin_scale);
-	setPosition(offset);
-
 	// fill in textures
 	for (unsigned i = 0; i < kNumRows; i++) {
 		for (unsigned j = 0; j < kNumColumns; j++) {
@@ -54,20 +51,21 @@ void Background::SetImage(const ImgConstPtr& image) {
 			m_txt[idx].setSmooth(true);
 
 			m_sprite[idx].setTexture(m_txt[idx]);
-			m_sprite[idx].setPosition(j * p_width, i * p_height);
+			m_sprite[idx].setScale(fin_scale, fin_scale);
+
+			m_rtxt[idx].create(p_width * fin_scale, p_height * fin_scale);
+			m_rtxt[idx].draw(m_sprite[idx]);
+			m_rtxt[idx].display();
+
+			m_rsprite[idx].setTexture(m_rtxt[idx].getTexture(), true);
+			m_rsprite[idx].setPosition(j * p_width * fin_scale + offset.x, i * p_height * fin_scale + offset.y);
 		}
 	}
 }
 
-void Background::ScaleAndFit() {
-
-}
-
 void Background::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	states.transform *= getTransform();
-
 	for (size_t i = 0; i < kNumElems; i++) {
-		target.draw(m_sprite[i], states);
+		target.draw(m_rsprite[i], states);
 	}
 }
 
@@ -96,9 +94,6 @@ void UserVideo::SetImage(const ImgConstPtr& image, const sf::IntRect& rect) {
 	crop.height = m_size.y;
 
 	m_sprite.setTextureRect(crop);
-
-	// move to fit in center
-	//setPosition(, 0);
 }
 
 // #############################################################################
@@ -188,7 +183,9 @@ void Scene::UpdateCollisions() {
 			sp->OnCollision(&destroy);
 
 			if (destroy) {
-				m_flyingObjects.erase(it);
+				const auto d_it = it;
+				it++;
+				m_flyingObjects.erase(d_it);
 			}
 		}
 		else {

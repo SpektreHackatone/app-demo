@@ -32,9 +32,9 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 	m_layout = l;
 
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
-		"C:\\Users\\winda\\Pictures\\tomato_128_128.png",
+		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
-		"C:\\Users\\winda\\Documents\\Adobe\\After Effects 2020\\Resources\\klaksa2.png",
+		"images/klaksa2.png",
 		sf::Vector2f(0.1, 0.1)));
 	tomato->setScale(0.2, 0.2);
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
@@ -84,9 +84,9 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 		m_scene->AddCollidable(user);
 	}
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
-		"C:\\Users\\winda\\Pictures\\tomato_128_128.png",
+		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
-		"C:\\Users\\winda\\Documents\\Adobe\\After Effects 2020\\Resources\\klaksa2.png",
+		"images/klaksa2.png",
 		sf::Vector2f(0.1, 0.1)));
 	tomato->setScale(0.2, 0.2);
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);

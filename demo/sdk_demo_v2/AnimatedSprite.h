@@ -21,14 +21,8 @@ public:
 		sf::Vector2f scaleSplash,
 		float baseRotation = 0,
 		float speed = 5);
-	~AnimatedSprite();
+
 	void nextSprite();
-	void setScale(sf::Vector2f);
-	void moveTo(sf::Vector2f);
-	sf::Vector2f getLocalPosition();
-	sf::Vector2f getGlobalPosition();
-	float getRotation();
-	void setRotation(float);
 
 	void OnCollision(bool* destroy) override;
 	sf::FloatRect GetGlobalBounds() const override;
