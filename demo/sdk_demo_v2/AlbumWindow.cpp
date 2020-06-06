@@ -1,4 +1,5 @@
 #include "AlbumWindow.h"
+#include <list>
 
 AlbumWindowThread::AlbumWindowThread(IDrawingThing* drawer)
 	: m_thread(&AlbumWindowThread::ThreadWrapper, this)
@@ -39,6 +40,14 @@ void AlbumWindowThread::PutFrame(const ImgConstPtr& img, uint32_t ts_ms)
     m_mutex.unlock();
 }
 
+void AlbumWindowThread::PutChatMessage(const std::wstring& str)
+{
+    m_mutex.lock();
+    m_chatQueue.push_back(str);
+    m_chatUpdated = true;
+    m_mutex.unlock();
+}
+
 void AlbumWindowThread::ThreadFunc()
 {
 	sf::RenderWindow window(sf::VideoMode(1200, 750), "AlbumView");
@@ -61,6 +70,8 @@ void AlbumWindowThread::ThreadFunc()
         // check if frame data or layout is updated
         ImgConstPtr frame;
         uint32_t ts_ms = 0;
+        std::list<std::wstring> strs;
+
         const LayoutInfo* layout = nullptr;
         {
             m_mutex.lock();
@@ -74,6 +85,11 @@ void AlbumWindowThread::ThreadFunc()
                 layout = &m_lastLayout;
                 m_layoutUpdated = false;
             }
+
+            if (m_chatUpdated) {
+                strs = m_chatQueue;
+                m_chatUpdated = false;
+            }
             m_mutex.unlock();
         }
 
@@ -85,6 +101,12 @@ void AlbumWindowThread::ThreadFunc()
         // put new layout if it is updated
         if (layout) {
             m_drawer->PutLayout(*layout);
+        }
+
+        if (strs.size() > 0) {
+            for (const auto& s : strs) {
+                m_drawer->PutChatMessage(s);
+            }
         }
 
         // clear the window with black color

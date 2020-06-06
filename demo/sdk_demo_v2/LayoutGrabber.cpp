@@ -11,6 +11,7 @@ LayoutGrabber::LayoutGrabber() {
 	m_layoutHwnd = NULL;
 	m_timerId = NULL;
 	m_timerGrabber = this;
+	m_chatControllerWorkflow = nullptr;
 
 	m_awThread->Start();
 	StartTimer();
@@ -22,6 +23,7 @@ LayoutGrabber::~LayoutGrabber() {
 
 	delete m_drawerDemo;
 	delete m_awThread;
+	delete m_chatControllerWorkflow;
 }
 
 void LayoutGrabber::onHwndChanged(const HWND& hwnd)
@@ -39,17 +41,37 @@ void LayoutGrabber::onLayoutChanged(const LayoutInfo& layout)
 
 void LayoutGrabber::onMeetingChanged(bool start)
 {
-	return;
 	OutputDebugString(L"meeting changed\n");
 
 	if (start) {
-		m_awThread->Start();
-		StartTimer();
+		//m_awThread->Start();
+		//StartTimer();
+
+		if (m_chatControllerWorkflow) {
+			delete m_chatControllerWorkflow;
+		}
+		m_chatControllerWorkflow = new CSDKChatControllerWorkFlow();
+		m_chatControllerWorkflow->SetEvent(this);
 	}
 	else {
-		m_awThread->Stop();
-		StopTimer();
+		//m_awThread->Stop();
+		//StopTimer();
 	}
+}
+
+void LayoutGrabber::onChatMsgNotifcation(ZOOM_SDK_NAMESPACE::IChatMsgInfo* chatMsg, const wchar_t* ccc) {
+	OutputDebugString(L"Message received!\n");
+
+	if (chatMsg->IsChatToAll()) {
+		const std::wstring str = chatMsg->GetContent();
+		if (str[0] == L'$') {
+			m_awThread->PutChatMessage(str);
+		}
+	}
+}
+
+void LayoutGrabber::onChatStautsChangedNotification(ZOOM_SDK_NAMESPACE::ChatStatus* status_) {
+
 }
 
 void LayoutGrabber::onTimerFired(uint32_t ts)

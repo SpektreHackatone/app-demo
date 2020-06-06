@@ -91,10 +91,13 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 	tomato->setScale(0.2, 0.2);
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
 	tomato->SetSpeed(sf::Vector2f(-10, -7.5));
-	/*
+}
+
+void DrawerDemo::PutChatMessage(const std::wstring& str)
+{
+	// TODO: dropper
 	SimpleTomato::Ptr tomato = SimpleTomato::Ptr(new SimpleTomato(m_scene));
 	tomato->SetSpeed(sf::Vector2f(-5, -2.5));
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
-	*/
 	m_scene->AddFlyingObject(tomato);
 }
