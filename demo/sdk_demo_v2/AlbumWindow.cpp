@@ -1,5 +1,6 @@
 #include "AlbumWindow.h"
 #include <list>
+#include <sstream>
 
 AlbumWindowThread::AlbumWindowThread(IDrawingThing* drawer)
 	: m_thread(&AlbumWindowThread::ThreadWrapper, this)
@@ -57,6 +58,7 @@ void AlbumWindowThread::ThreadFunc()
 
     m_drawer->Init(&window);
 
+    sf::Clock clock;
 	while (m_isRunning && window.isOpen()) {
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
@@ -115,6 +117,11 @@ void AlbumWindowThread::ThreadFunc()
         // draw everything here...
         m_drawer->Draw(&window);
 
+        sf::Time elapsed = clock.getElapsedTime();
+        clock.restart();
+        
+        PrintTime(elapsed, &window);
+
         // end the current frame
         window.display();
 	}
@@ -122,6 +129,27 @@ void AlbumWindowThread::ThreadFunc()
 	if (window.isOpen()) {
 		window.close();
 	}
+}
+
+void AlbumWindowThread::PrintTime(const sf::Time& elapsed, sf::RenderWindow* w) {
+    static sf::Text txt;
+    static sf::Font fnt;
+    
+    if (!fnt.loadFromFile("c:/windows/fonts/cour.ttf")) {
+        OutputDebugString(L"failed to load font\n");
+    }
+
+    std::stringstream ss;
+    ss << "dt: " << elapsed.asMilliseconds();
+
+    txt.setFont(fnt);
+    txt.setString(ss.str());
+    txt.setCharacterSize(16);
+    txt.setColor(sf::Color::Black);
+
+    txt.setPosition(1, 1);
+
+    w->draw(txt);
 }
 
 void AlbumWindowThread::ThreadWrapper(AlbumWindowThread* p)

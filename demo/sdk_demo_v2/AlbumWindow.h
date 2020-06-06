@@ -40,6 +40,8 @@ private:
 	static void ThreadWrapper(AlbumWindowThread* p);
 	void ThreadFunc();
 
+	void PrintTime(const sf::Time& t, sf::RenderWindow* window);
+
 	sf::Thread m_thread;
 	sf::Mutex m_mutex;
 
