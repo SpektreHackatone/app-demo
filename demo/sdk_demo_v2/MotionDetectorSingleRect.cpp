@@ -2,7 +2,7 @@
 
 #include <opencv2/opencv.hpp>
 
-const double MotionDetectorWithInterestRects::kInAreaCoef{ 0.25 };
+const double MotionDetectorWithInterestRects::kInAreaCoef{ 0.1 };
 const double MotionDetectorWithInterestRects::kMotionOutAreaCoef{ 0.02 };
 const double MotionDetectorWithInterestRects::kOutAreaCoef{ 0.05 };
 

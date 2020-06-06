@@ -54,7 +54,7 @@ public:
 
 	static const int kThresholdForIn{ 20 };
 	static const int kThresholdForMotionOut{ 5 };
-	static const int kThresholdForOut{ 5 };
+	static const int kThresholdForOut{ 12 };
 
 	static const int kTimeout{ 5000 };
 
