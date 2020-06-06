@@ -50,3 +50,51 @@ sf::Vector2f BasicGridLayout::GetFrameSize() const {
 
 	return ret;
 }
+
+SimpleTomato::SimpleTomato(const Scene::WeakPtr& scene)
+	: m_scene(scene) {
+	m_shape.setFillColor(sf::Color::Red);
+	m_shape.setRadius(5.0);
+
+	auto bounds = m_shape.getGlobalBounds();
+	m_shape.setOrigin(bounds.width / 2, bounds.height / 2);
+}
+
+void SimpleTomato::OnCollision(bool* destroy) {
+	// remove this tomato from scene and add splash
+	auto scene = m_scene.lock();
+
+	if (!scene) {
+		return;
+	}
+
+	*destroy = true;
+
+	SimpleTomatoSplash::Ptr splash = SimpleTomatoSplash::Ptr(new SimpleTomatoSplash(getPosition()));
+	scene->AddSplashObject(splash);
+}
+
+sf::FloatRect SimpleTomato::GetGlobalBounds() const {
+	return getTransform().transformRect(m_shape.getGlobalBounds());
+}
+
+void SimpleTomato::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	states.transform *= getTransform();
+	target.draw(m_shape, states);
+}
+
+
+SimpleTomatoSplash::SimpleTomatoSplash(const sf::Vector2f& pos) {
+	setPosition(pos);
+
+	m_shape.setRadius(15.0);
+	m_shape.setFillColor(sf::Color(255, 0, 0, 64));
+
+	auto bounds = m_shape.getGlobalBounds();
+	m_shape.setOrigin(bounds.width / 2, bounds.height / 2);
+}
+
+void SimpleTomatoSplash::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	states.transform *= getTransform();
+	target.draw(m_shape, states);
+}

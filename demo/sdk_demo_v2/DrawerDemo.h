@@ -3,8 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include "SceneElements.h"
 
-#define MAX_USERS 12
-
 class DrawerDemo : public IDrawingThing
 {
 public:
@@ -24,10 +22,9 @@ public:
 
 private:
 	Scene::Ptr m_scene;
+	sf::Vector2u m_windowSize;
 
 	ImgConstPtr m_img;
-	sf::Texture m_txt[MAX_USERS];
-	sf::Sprite m_spr[MAX_USERS];
 	LayoutInfo m_layout;
 };
 

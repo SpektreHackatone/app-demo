@@ -184,7 +184,12 @@ void Scene::UpdateCollisions() {
 		const IFlyingObject::Ptr sp = *it;
 
 		if (CheckCollision(sp)) {
-			sp->OnCollision();
+			bool destroy = false;
+			sp->OnCollision(&destroy);
+
+			if (destroy) {
+				m_flyingObjects.erase(it);
+			}
 		}
 		else {
 			sp->MoveBySpeed();

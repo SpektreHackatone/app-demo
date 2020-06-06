@@ -60,14 +60,16 @@ public:
 		return m_speed;
 	}
 
-	virtual void OnCollision() = 0;
+	virtual void OnCollision(bool* destroy) = 0;
 
 	virtual void MoveBySpeed() {
+		m_prevPos = getPosition();
 		move(GetSpeed());
 	}
 
 private:
 	sf::Vector2f m_speed;
+	sf::Vector2f m_prevPos;
 };
 
 class ISplashObject : public sf::Drawable, public sf::Transformable {
@@ -197,6 +199,9 @@ public:
 
 	void AddCollidable(const Collidable::WeakPtr& c) {
 		m_collidableObjects.push_back(c);
+	}
+	void ClearCollidable() {
+		m_collidableObjects.clear();
 	}
 
 	void UpdateCollisions();

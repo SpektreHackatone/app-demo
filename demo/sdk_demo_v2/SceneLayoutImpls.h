@@ -39,3 +39,28 @@ private:
 
 	std::vector<int> m_fillOrder;
 };
+
+class SimpleTomato : public IFlyingObject {
+public:
+	SimpleTomato(const Scene::WeakPtr& scene);
+
+	void OnCollision(bool* destroy) override;
+	sf::FloatRect GetGlobalBounds() const override;
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+private:
+	Scene::WeakPtr m_scene;
+	sf::CircleShape m_shape;
+};
+
+class SimpleTomatoSplash : public ISplashObject {
+public:
+	using Ptr = std::shared_ptr<SimpleTomatoSplash>;
+
+	SimpleTomatoSplash(const sf::Vector2f& pos);
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+private:
+	sf::CircleShape m_shape;
+};
