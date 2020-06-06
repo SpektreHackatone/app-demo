@@ -20,6 +20,8 @@ public:
 	// this function puts layout update in thread-safe way
 	void PutLayout(const LayoutInfo& l) override;
 
+	void PutChatMessage(const std::wstring& str) override;
+
 private:
 	Scene::Ptr m_scene;
 	sf::Vector2u m_windowSize;

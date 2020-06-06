@@ -5,6 +5,7 @@
 #include "LayoutGrabber.h"
 #include <Windows.h>
 #include "DrawingCommon.h"
+#include <list>
 
 class IDrawingThing {
 public:
@@ -19,6 +20,9 @@ public:
 
 	// this function puts layout update in thread-safe way
 	virtual void PutLayout(const LayoutInfo& l) = 0;
+
+	// this function puts chat message in here
+	virtual void PutChatMessage(const std::wstring& str) = 0;
 };
 
 class AlbumWindowThread {
@@ -30,6 +34,7 @@ public:
 
 	void PutLayout(const LayoutInfo& l);
 	void PutFrame(const ImgConstPtr& img, uint32_t ts_ms);
+	void PutChatMessage(const std::wstring& str);
 
 private:
 	static void ThreadWrapper(AlbumWindowThread* p);
@@ -44,6 +49,9 @@ private:
 
 	bool m_layoutUpdated;
 	LayoutInfo m_lastLayout;
+
+	bool m_chatUpdated;
+	std::list<std::wstring> m_chatQueue;
 
 	IDrawingThing* m_drawer;
 

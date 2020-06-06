@@ -73,7 +73,11 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 		UserDrawable::Ptr user = m_scene->GetLayout()->UserAt(i);
 		m_scene->AddCollidable(user);
 	}
+}
 
+void DrawerDemo::PutChatMessage(const std::wstring& str)
+{
+	// TODO: dropper
 	SimpleTomato::Ptr tomato = SimpleTomato::Ptr(new SimpleTomato(m_scene));
 	tomato->SetSpeed(sf::Vector2f(-5, -2.5));
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);

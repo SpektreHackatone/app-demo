@@ -65,8 +65,7 @@ void LayoutGrabber::onChatMsgNotifcation(ZOOM_SDK_NAMESPACE::IChatMsgInfo* chatM
 	if (chatMsg->IsChatToAll()) {
 		const std::wstring str = chatMsg->GetContent();
 		if (str[0] == L'$') {
-			OutputDebugString(L"System message received!\n");
-			m_chatControllerWorkflow->SendChatMsg(0, L"See ya");
+			m_awThread->PutChatMessage(str);
 		}
 	}
 }
