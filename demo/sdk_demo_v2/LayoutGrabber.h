@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "stdafx.h"
+#include "chat_controller_workflow.h"
 
 #define TIMER_RATE 30
 
@@ -29,15 +30,21 @@ public:
 	virtual void onFrameReceived() = 0;
 };
 
-class LayoutGrabber : public ILayoutGrabberEvent
+class LayoutGrabber : public ILayoutGrabberEvent, public IMeetingChatCtrlEventWrap
 {
 public:
 	LayoutGrabber();
 	~LayoutGrabber();
 
+	// ILayoutGrabberEvent
 	void onMeetingChanged(bool start) override;
 	void onLayoutChanged(const LayoutInfo& layout) override;
 	void onHwndChanged(const HWND& hwnd) override;
+
+	// IMeetingChatCtrlEventWrap
+	void onChatMsgNotifcation(ZOOM_SDK_NAMESPACE::IChatMsgInfo* chatMsg, const wchar_t* ccc) override;
+	void onChatStautsChangedNotification(ZOOM_SDK_NAMESPACE::ChatStatus* status_) override;
+
 
 private:
 	void onTimerFired(uint32_t ts);
@@ -54,5 +61,7 @@ private:
 
 	DrawerDemo* m_drawerDemo;
 	AlbumWindowThread* m_awThread;
+
+	CSDKChatControllerWorkFlow* m_chatControllerWorkflow;
 };
 
