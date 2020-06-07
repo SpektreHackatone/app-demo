@@ -91,7 +91,8 @@ void UserVideo::SetImage(const ImgConstPtr& image, const sf::IntRect& rect) {
 
 	// scale vertically to fit in center
 	m_scale = m_visibleSize.y / rect.height;
-	m_sprite.setScale(m_scale, m_scale);
+
+	m_sprite.setScale(m_mirror ? -m_scale : m_scale, m_scale);
 
 	sf::IntRect crop;
 	crop.top = 0;

@@ -133,6 +133,10 @@ public:
 		return m_origin;
 	}
 
+	void SetMirrored(bool mirror) {
+		m_mirror = mirror;
+	}
+
 private:
 	sf::Vector2f m_visibleSize;
 	sf::Vector2f m_origin;
@@ -141,6 +145,7 @@ private:
 	sf::Texture m_txt;
 	sf::Sprite m_sprite;
 
+	bool m_mirror;
 	float m_scale;
 	sf::Vector2f m_rectSize;
 };
@@ -183,6 +188,9 @@ public:
 
 	void SetUserInLayoutInfo(const UserInLayout& info) {
 		m_layoutInfo = info;
+		if (!info.is_me) {
+			m_video->SetMirrored(true);
+		}
 	}
 
 private:

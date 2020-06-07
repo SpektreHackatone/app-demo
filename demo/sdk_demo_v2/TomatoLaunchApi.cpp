@@ -48,7 +48,7 @@ std::wstring TomatoLaunchApi::GetTomatoTypeDesc(const IFlyingObject::Ptr& obj) {
 		ss << "t,";
 
 		// splash - s1 (FIXME)
-		ss << "ts1,";
+		ss << "ts2,";
 
 		// scale
 		ss.precision(2);
