@@ -11,6 +11,9 @@ ISplashObject::Ptr TomatoLaunchApi::MakeSplash(const std::wstring& type, float s
 	else if (type == L"ts2") {
 		ret = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/klaksa2.png"));
 	}
+	else if (type == L"gr1") {
+		ret = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/grunge0.png"));
+	}
 
 	if (ret) {
 		ret->setScale(scale, scale);
@@ -36,6 +39,17 @@ IFlyingObject::Ptr TomatoLaunchApi::MakeTomato(const Scene::WeakPtr& scene, cons
 			splash,
 			AnimatedEffect::Ptr(nullptr)));
 		ret->setScale(sf::Vector2f(t_scale, t_scale));
+	} else if (type == L"f") {
+		AnimatedEffect::Ptr explosion = AnimatedEffect::Ptr(new AnimatedEffect("images/explosion0_71_100_5_5.png", sf::IntRect(0, 0, 71, 100), 8, 22));
+
+		ret = AnimatedSprite::Ptr(new AnimatedSprite(
+			scene,
+			"images/fireballsm_128_146_6_5.png",
+			sf::IntRect(0, 0, 128, 146),
+			splash,
+			explosion,
+			90));
+		ret->setScale(t_scale, t_scale);
 	}
 
 	return ret;
@@ -43,12 +57,25 @@ IFlyingObject::Ptr TomatoLaunchApi::MakeTomato(const Scene::WeakPtr& scene, cons
 
 std::wstring TomatoLaunchApi::GetTomatoTypeDesc(const IFlyingObject::Ptr& obj) {
 	if (obj) {
-		std::wstringstream ss;
-		// type - tomato
-		ss << "t,";
+		AnimatedSprite* as = dynamic_cast<AnimatedSprite*>(&*obj);
+		if (!as) {
+			return L"";
+		}
 
-		// splash - s1 (FIXME)
-		ss << "ts2,";
+		std::string fn = as->GetFilename();
+		std::wstringstream ss;
+
+		if (fn.find("fireball") != std::string::npos) {
+			ss << "f,";
+			// splash - gr1
+			ss << "gr1,";
+		}
+		else {
+			// type - tomato
+			ss << "t,";
+			// splash - s1 (FIXME)
+			ss << "ts2,";
+		}
 
 		// scale
 		ss.precision(2);

@@ -16,7 +16,8 @@ AnimatedSprite::AnimatedSprite(
 	m_scene(scene),
 	_splash(splash),
 	_effect(effect),
-	_rect(spriteRect)
+	_rect(spriteRect),
+	m_filename(spriteFile)
 {
 	if (!_texture.loadFromFile(spriteFile)) {
 		OutputDebugString(L"failed to load texture\n");

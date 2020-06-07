@@ -25,6 +25,10 @@ public:
 
 	void nextSprite();
 
+	std::string GetFilename() const {
+		return m_filename;
+	}
+
 	void OnCollision(bool* destroy) override;
 	sf::FloatRect GetGlobalBounds() const override;
 	void MoveBySpeed() override;
@@ -32,6 +36,7 @@ public:
 
 private:
 	Scene::WeakPtr m_scene;
+	std::string m_filename;
 	sf::Texture _texture;
 	sf::Sprite _sprite;
 	sf::IntRect _rect;
