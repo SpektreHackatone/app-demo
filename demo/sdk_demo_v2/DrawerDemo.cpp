@@ -5,10 +5,9 @@
 #include "TomatoLaunchApi.h"
 #include "LayoutGrabber.h"
 
-DrawerDemo::DrawerDemo(LayoutGrabber* g)
+DrawerDemo::DrawerDemo()
 	: m_detector()
-	, m_detectorInitialized(false)
-	, m_g(g) {}
+	, m_detectorInitialized(false) {}
 
 DrawerDemo::~DrawerDemo()
 {
@@ -177,7 +176,7 @@ void DrawerDemo::LaunchTomato(const IFlyingObject::Ptr& obj, const cv::Point& p1
 	m_scene->RemoveFlyingObject(obj);
 
 	std::wstring msg = TomatoLaunchApi::LaunchTomatoMsg(obj, dx * scale, dy * scale);
-	m_g->SendChatMessage(0, msg);
+	m_outputQueue.push_back(msg);
 }
 
 void DrawerDemo::OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2)
@@ -210,4 +209,8 @@ void DrawerDemo::OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2)
 	case MDEventType::OUT12:
 		break;
 	}
+}
+
+std::list<std::wstring>&& DrawerDemo::TakeOutputChatQueue() {
+	return std::move(m_outputQueue);
 }
