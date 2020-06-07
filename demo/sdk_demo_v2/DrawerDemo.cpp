@@ -40,7 +40,7 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 	AnimatedEffect::Ptr explosion = AnimatedEffect::Ptr(new AnimatedEffect("images/explosion0_71_100_5_5.png", sf::IntRect(0, 0, 71, 100), 8, 22));
 
 	AnimatedSpriteSplash::Ptr tomato_splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/grunge0.png"));
-	tomato_splash->setScale(0.08, 0.08);
+	tomato_splash->setScale(0.3, 0.3);
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(
 		m_scene,
 		"images/fireballsm_128_146_6_5.png",
@@ -193,7 +193,7 @@ IFlyingObject::Ptr DrawerDemo::SpawnFireball(const cv::Point& p1) {
 	float pos_y = user->getPosition().y + pos.y;
 
 	AnimatedSpriteSplash::Ptr grunge = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/grunge0.png"));
-	grunge->setScale(0.1, 0.1);
+	grunge->setScale(0.4, 0.4);
 
 	AnimatedEffect::Ptr explosion = AnimatedEffect::Ptr(new AnimatedEffect("images/explosion0_71_100_5_5.png", sf::IntRect(0, 0, 71, 100), 8, 22));
 
