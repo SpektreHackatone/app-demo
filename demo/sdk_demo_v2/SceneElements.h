@@ -78,15 +78,18 @@ public:
 	using Ptr = std::shared_ptr<ISplashObject>;
 };
 
-class IAnimatedObject : public sf::Drawable, sf::Transformable
+class IAnimatedObject : public sf::Drawable, public sf::Transformable
 {
 public:
 	using Ptr = std::shared_ptr<IAnimatedObject>;
 
-	virtual void UpdateObject();
+	virtual void UpdateObject() = 0;
 	void NextStep() {
 		m_cur_steps++;
 		UpdateObject();
+	}
+	void SetCurSteps(int cur_steps) {
+		m_cur_steps = cur_steps;
 	}
 	int GetCurSteps() {
 		return m_cur_steps;
@@ -100,7 +103,7 @@ public:
 
 private:
 	int m_steps;
-	int m_cur_steps;
+	int m_cur_steps = 0;
 };
 
 // drawing of user elements

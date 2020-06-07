@@ -107,6 +107,9 @@ void AnimatedSprite::OnCollision(bool* destroy) {
 	AnimatedSpriteSplash::Ptr splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash(getPosition(), _splashFile));
 	splash->setScale(_scaleSplash);
 	scene->AddSplashObject(splash);
+	AnimatedEffect::Ptr effect = AnimatedEffect::Ptr(new AnimatedEffect(getPosition(), "images/explosion0_71_100_5_5.png", sf::IntRect(0, 0, 71, 100), 8, 22));
+	effect->setScale(1.3, 1.3);
+	scene->AddAnimatedObject(effect);
 }
 
 void AnimatedSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -128,4 +131,79 @@ AnimatedSpriteSplash::AnimatedSpriteSplash(const sf::Vector2f& pos, std::string 
 void AnimatedSpriteSplash::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.transform *= getTransform();
 	target.draw(m_shape, states);
+}
+
+AnimatedEffect::AnimatedEffect(const sf::Vector2f& pos, std::string fileName, sf::IntRect rect, int from, int to)
+	: m_rect(rect)
+{
+	SetCurSteps(from);
+	SetSteps(to);
+	m_texture.loadFromFile(fileName);
+	m_shape.setTexture(m_texture);
+	m_shape.setTextureRect(m_rect);
+	m_meta = getSpriteMetaData();
+
+	setPosition(pos);
+	auto bounds = m_shape.getGlobalBounds();
+	m_shape.setOrigin(bounds.width * m_shape.getScale().x / 2, bounds.height * m_shape.getScale().y / 2);
+}
+
+void AnimatedEffect::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	states.transform *= getTransform();
+	target.draw(m_shape, states);
+}
+
+void AnimatedEffect::UpdateObject()
+{
+	m_rect.left = ((GetCurSteps() % m_meta.totalNum) % m_meta.colNum) * m_rect.width;
+	m_rect.top = ((GetCurSteps() % m_meta.totalNum) / m_meta.colNum) * m_rect.height;
+	m_shape.setTextureRect(m_rect);
+}
+
+int AnimatedEffect::getSumPixels(sf::Image img, sf::IntRect rect)
+{
+	int result = 0;
+	for (size_t x = rect.left + 1; x < rect.left + rect.width - 1; x++)
+	{
+		for (size_t y = rect.top + 1; y < rect.top + rect.height - 1; y++)
+		{
+			sf::Color cPixel = img.getPixel(x, y);
+			result += cPixel.a * (cPixel.r + cPixel.g + cPixel.b);
+		}
+	}
+	return result;
+}
+
+SpriteMetaData AnimatedEffect::getSpriteMetaData()
+{
+	SpriteMetaData result;
+	result.totalNum = 0;
+	result.rowNum = 0;
+	result.colNum = 0;
+
+	sf::Image image = m_texture.copyToImage();
+	sf::Vector2u size = m_texture.getSize();
+	sf::IntRect rectSourceSprite(0, 0, m_rect.width, m_rect.height);
+	for (size_t i = 0; i < size.y; i += m_rect.height, result.rowNum++)
+	{
+		rectSourceSprite.top = i;
+		result.colNum = 0;
+		for (size_t j = 0; j < size.x; j += m_rect.width, result.colNum++)
+		{
+			rectSourceSprite.left = j;
+			if (getSumPixels(image, rectSourceSprite) != 0)
+			{
+				result.totalNum++;
+			}
+			else
+			{
+				result.last = sf::Vector2u(result.rowNum, result.colNum - 1);
+				break;
+			}
+		}
+	}
+	result.rowNum = size.y / m_rect.height;
+	result.colNum = size.x / m_rect.width;
+	return result;
 }

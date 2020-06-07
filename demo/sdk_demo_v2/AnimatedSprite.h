@@ -57,3 +57,22 @@ private:
 	sf::Sprite m_shape;
 	sf::Texture m_texture;
 };
+
+class AnimatedEffect : public IAnimatedObject
+{
+public:
+	using Ptr = std::shared_ptr<AnimatedEffect>;
+	AnimatedEffect(const sf::Vector2f& pos, std::string fileName, sf::IntRect, int from, int to);
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	void UpdateObject() override;
+private:
+	sf::Sprite m_shape;
+	sf::Texture m_texture;
+	sf::IntRect m_rect;
+	SpriteMetaData m_meta;
+
+	int getSumPixels(sf::Image, sf::IntRect);
+	SpriteMetaData getSpriteMetaData();
+};
