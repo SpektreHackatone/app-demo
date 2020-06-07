@@ -18,7 +18,7 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 
 	auto size = window->getSize();
 	m_windowSize = size;
-	BasicGridLayout::Ptr layout = BasicGridLayout::Ptr(new BasicGridLayout(size.x, size.y, 4, 2));
+	BasicGridLayout::Ptr layout = BasicGridLayout::Ptr(new BasicGridLayout(size.x, size.y, 3, 2));
 	layout->SetFillOrder(std::vector<int>{0, 7, 2, 5, 1, 6, 4, 3});
 
 	Background::Ptr bg = Background::Ptr(new Background(sf::Vector2f(size.x, size.y)));
