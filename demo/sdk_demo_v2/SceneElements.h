@@ -188,9 +188,7 @@ public:
 
 	void SetUserInLayoutInfo(const UserInLayout& info) {
 		m_layoutInfo = info;
-		if (!info.is_me) {
-			m_video->SetMirrored(true);
-		}
+		m_video->SetMirrored(!info.is_me);
 	}
 
 private:

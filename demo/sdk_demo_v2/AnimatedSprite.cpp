@@ -18,7 +18,9 @@ AnimatedSprite::AnimatedSprite(
 	_effect(effect),
 	_rect(spriteRect)
 {
-	_texture.loadFromFile(spriteFile);
+	if (!_texture.loadFromFile(spriteFile)) {
+		OutputDebugString(L"failed to load texture\n");
+	}
 	_sprite.setTexture(_texture);
 	_sprite.setTextureRect(_rect);
 
@@ -31,10 +33,12 @@ AnimatedSprite::AnimatedSprite(
 
 void AnimatedSprite::nextSprite()
 {
-	_sprite.setTextureRect(_rect);
-	_current = (_current + 1) % _meta.totalNum;
-	_rect.left = (_current % _meta.colNum) * _rect.width;
-	_rect.top = (_current / _meta.colNum) * _rect.height;
+	if (_meta.totalNum != 0) {
+		_sprite.setTextureRect(_rect);
+		_current = (_current + 1) % _meta.totalNum;
+		_rect.left = (_current % _meta.colNum) * _rect.width;
+		_rect.top = (_current / _meta.colNum) * _rect.height;
+	}
 }
 
 int AnimatedSprite::getSumPixels(sf::Image img, sf::IntRect rect)

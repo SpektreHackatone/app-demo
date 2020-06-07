@@ -193,17 +193,18 @@ IFlyingObject::Ptr DrawerDemo::SpawnFireball(const cv::Point& p1) {
 	float pos_y = user->getPosition().y + pos.y;
 
 	AnimatedSpriteSplash::Ptr grunge = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/grunge0.png"));
-	grunge->setScale(0.4, 0.4);
+	grunge->setScale(0.3, 0.3);
 
 	AnimatedEffect::Ptr explosion = AnimatedEffect::Ptr(new AnimatedEffect("images/explosion0_71_100_5_5.png", sf::IntRect(0, 0, 71, 100), 8, 22));
 
-	AnimatedSprite::Ptr fireball = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
-		"images/fireball_3_529_600_6_5.png",
-		sf::IntRect(0, 0, 529, 600),
+	AnimatedSprite::Ptr fireball = AnimatedSprite::Ptr(new AnimatedSprite(
+		m_scene,
+		"images/fireballsm_128_146_6_5.png",
+		sf::IntRect(0, 0, 128, 146),
 		grunge,
 		explosion,
 		90));
-	fireball->setScale(0.25, 0.25);
+	fireball->setScale(0.3, 0.3);
 	fireball->setPosition(pos_x, pos_y);
 	fireball->SetSpeed(sf::Vector2f(0, 0));
 
