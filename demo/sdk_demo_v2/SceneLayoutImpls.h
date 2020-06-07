@@ -9,12 +9,32 @@ public:
 	}
 
 	void SetSize(const sf::Vector2f& size);
+	sf::Vector2f GetVisibleSize() const override;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
 	sf::RectangleShape m_shape;
 };
+
+class TexturePhotoFrame : public IPhotoFrame {
+public:
+	TexturePhotoFrame(const std::string& filename,
+					  const sf::Vector2f& frameVisibleSize,
+					  const sf::Vector2f& frameScale);
+
+	sf::Vector2f GetVisibleSize() const override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+private:
+	sf::Texture m_txt;
+	sf::Sprite m_sprite;
+
+	sf::Vector2f m_visibleSize;
+};
+
+// ##########################################################################################################
+// layouts
 
 class BasicGridLayout : public ILayout {
 public:

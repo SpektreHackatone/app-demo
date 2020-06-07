@@ -130,8 +130,10 @@ void DrawerDemo::PutChatMessage(const std::wstring& str)
 IFlyingObject::Ptr DrawerDemo::SpawnTomato(const cv::Point& p1) {
 	UserDrawable::Ptr user = m_scene->GetLayout()->UserAt(0);
 
-	float pos_x = user->getPosition().x + p1.x;
-	float pos_y = user->getPosition().y + p1.y;
+	sf::Vector2f pos = user->GetVideo()->GetRelativeCoords(sf::Vector2f(p1.x, p1.y));
+
+	float pos_x = user->getPosition().x + pos.x;
+	float pos_y = user->getPosition().y + pos.y;
 
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
 		"images/tomato_128_128.png",
@@ -167,7 +169,7 @@ void DrawerDemo::OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2)
 		break;
 	case MDEventType::IN2:
 		if (!m_rightLauncher) {
-			m_rightLauncher = SpawnTomato(p2);
+			m_rightLauncher = SpawnTomato(p1);
 		}
 		break;
 	case MDEventType::OUT1:

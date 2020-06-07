@@ -77,32 +77,49 @@ void UserVideo::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(m_sprite, states);
 }
 
+// rect - region in (large) image where image is placed
 void UserVideo::SetImage(const ImgConstPtr& image, const sf::IntRect& rect) {
 	m_image = image;
+	m_rectSize.x = rect.width;
+	m_rectSize.y = rect.height;
+
 	m_txt.loadFromImage(*image, rect);
 	m_txt.setSmooth(true);
-	m_sprite.setTexture(m_txt);
+
+	m_sprite.setTexture(m_txt, true);
+	m_sprite.setOrigin(rect.width / 2, rect.height / 2);
 
 	// scale vertically to fit in center
-	float scale = m_size.y / rect.height;
-	setScale(scale, scale);
+	m_scale = m_visibleSize.y / rect.height;
+	m_sprite.setScale(m_scale, m_scale);
 
 	sf::IntRect crop;
 	crop.top = 0;
-	crop.left = std::round(rect.width / 2 - m_size.x / scale / 2);
-	crop.width = std::round(m_size.x / scale);
-	crop.height = m_size.y;
+	crop.left = std::round(rect.width / 2 - m_visibleSize.x / m_scale / 2);
+	crop.width = std::round(m_visibleSize.x / m_scale);
+	crop.height = std::round(m_visibleSize.y / m_scale);
 
 	m_sprite.setTextureRect(crop);
+	m_sprite.setOrigin(crop.width / 2, crop.height / 2);
+	m_sprite.setPosition(0, 0);
+}
+
+sf::Vector2f UserVideo::GetRelativeCoords(const sf::Vector2f& p) const {
+	sf::Vector2f ret;
+
+	ret.x = (p.x - m_rectSize.x / 2) * m_scale;
+	ret.y = (p.y - m_rectSize.y / 2) * m_scale;
+
+	return ret;
 }
 
 // #############################################################################
 // User drawable things
 
-UserDrawable::UserDrawable(const sf::Vector2f& size, IPhotoFrame::Ptr frame)
-	: m_size(size)
+UserDrawable::UserDrawable(const sf::Vector2f& visibleSize, IPhotoFrame::Ptr frame)
+	: m_visibleSize(visibleSize)
 	, m_frame(frame) {
-	m_video = UserVideo::Ptr(new UserVideo(size));
+	m_video = UserVideo::Ptr(new UserVideo(visibleSize));
 }
 
 sf::FloatRect UserDrawable::GetGlobalBounds() const {
@@ -113,10 +130,14 @@ sf::FloatRect UserDrawable::GetGlobalBounds() const {
 
 	ret.left = pos.x;
 	ret.top = pos.y;
-	ret.width = m_size.x;
-	ret.height = m_size.y;
+	ret.width = m_visibleSize.x;
+	ret.height = m_visibleSize.y;
 
 	return ret;
+}
+
+sf::Vector2f UserDrawable::GetOriginalOrigin() const {
+	return sf::Vector2f();
 }
 
 void UserDrawable::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -152,7 +173,8 @@ UserDrawable::Ptr ILayout::UserAt(int pos) {
 	}
 
 	if (!m_users[pos]) {
-		m_users[pos] = UserDrawable::Ptr(new UserDrawable(GetFrameSize(), MakeDefaultFrame()));
+		auto f = MakeDefaultFrame();
+		m_users[pos] = UserDrawable::Ptr(new UserDrawable(f->GetVisibleSize(), f));
 		m_users[pos]->setPosition(GetPositionFor(pos));
 	}
 

@@ -1,16 +1,49 @@
 #include "SceneLayoutImpls.h"
 
-void BasicPhotoFrame::SetSize(const sf::Vector2f& size) {
+void BasicPhotoFrame::SetSize(const sf::Vector2f& size)
+{
 	m_shape.setSize(size);
 	m_shape.setFillColor(sf::Color::Transparent);
 	m_shape.setOutlineColor(sf::Color::Black);
 	m_shape.setOutlineThickness(5.0);
+	m_shape.setOrigin(size.x / 2, size.y / 2);
 }
 
-void BasicPhotoFrame::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	states.transform *= getTransform();
+sf::Vector2f BasicPhotoFrame::GetVisibleSize() const
+{
+	return m_shape.getSize();
+}
 
+void BasicPhotoFrame::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	states.transform *= getTransform();
 	target.draw(m_shape, states);
+}
+
+TexturePhotoFrame::TexturePhotoFrame(const std::string& filename,
+									 const sf::Vector2f& frameVisibleSize,
+									 const sf::Vector2f& frameScale)
+{
+	m_txt.loadFromFile(filename);
+	m_sprite.setTexture(m_txt, true);
+	
+	const auto& rect = m_sprite.getLocalBounds();
+	m_sprite.setOrigin(rect.width / 2, rect.height / 2);
+	m_sprite.setScale(frameScale);
+
+	m_visibleSize.x = frameVisibleSize.x * frameScale.x;
+	m_visibleSize.y = frameVisibleSize.y * frameScale.y;
+}
+
+sf::Vector2f TexturePhotoFrame::GetVisibleSize() const
+{
+	return m_visibleSize;
+}
+
+void TexturePhotoFrame::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	states.transform *= getTransform();
+	target.draw(m_sprite, states);
 }
 
 BasicGridLayout::BasicGridLayout(int width, int height, int num_cols, int num_rows, float x_scale, float y_scale)
@@ -26,18 +59,17 @@ sf::Vector2f BasicGridLayout::GetPositionFor(int i) const {
 		i = m_fillOrder[i];
 	}
 
-	sf::Vector2f frame_size = GetFrameSize();
 	sf::Vector2f offsets;
-	offsets.x = (m_width - m_numCols * frame_size.x) / m_numCols / 2;
-	offsets.y = (m_height - m_numRows * frame_size.y) / m_numRows / 2;
+	offsets.x = m_width / (m_numCols);
+	offsets.y = m_height / (m_numRows);
 
 	int col_idx = i % m_numCols;
 	int row_idx = i / m_numCols;
 
 	sf::Vector2f ret;
 
-	ret.x = col_idx * frame_size.x + (2 * col_idx + 1) * offsets.x;
-	ret.y = row_idx * frame_size.y + (2 * row_idx + 1) * offsets.y;
+	ret.x = (col_idx + 0.5) * offsets.x;
+	ret.y = (row_idx + 0.5) * offsets.y;
 
 	return ret;
 }

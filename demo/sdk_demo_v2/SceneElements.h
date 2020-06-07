@@ -82,26 +82,38 @@ public:
 class IPhotoFrame : public sf::Drawable, public sf::Transformable {
 public:
 	using Ptr = std::shared_ptr<IPhotoFrame>;
+
+	virtual sf::Vector2f GetVisibleSize() const = 0;
 };
 
 class UserVideo : public sf::Drawable, public sf::Transformable {
 public:
 	using Ptr = std::shared_ptr<UserVideo>;
-	UserVideo(const sf::Vector2f& size) : m_size(size) {}
+	UserVideo(const sf::Vector2f& size) : m_visibleSize(size) {}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void SetImage(const ImgConstPtr& image, const sf::IntRect& rect);
 	void SetSize(const sf::Vector2f& size) {
-		m_size = size;
+		m_visibleSize = size;
+	}
+
+	sf::Vector2f GetRelativeCoords(const sf::Vector2f& v) const;
+
+	sf::Vector2f GetOriginalOrigin() const {
+		return m_origin;
 	}
 
 private:
-	sf::Vector2f m_size;
+	sf::Vector2f m_visibleSize;
+	sf::Vector2f m_origin;
 
 	ImgConstPtr m_image;
 	sf::Texture m_txt;
 	sf::Sprite m_sprite;
+
+	float m_scale;
+	sf::Vector2f m_rectSize;
 };
 
 class UserDrawable : public sf::Drawable, public sf::Transformable, public Collidable {
@@ -116,8 +128,12 @@ public:
 	// for Collidable
 	sf::FloatRect GetGlobalBounds() const override;
 
+	// origin of original video
+	sf::Vector2f GetOriginalOrigin() const;
+
 	void SetFrame(const IPhotoFrame::Ptr& frame) {
 		m_frame = frame;
+		SetVisibleSize(frame->GetVisibleSize());
 	}
 
 	IPhotoFrame::Ptr GetFrame() const {
@@ -128,15 +144,15 @@ public:
 		return m_video;
 	}
 
-	void SetSize(const sf::Vector2f& size) {
-		m_size = size;
+	void SetVisibleSize(const sf::Vector2f& size) {
+		m_visibleSize = size;
 	}
 
 private:
 	IPhotoFrame::Ptr m_frame;
 	UserVideo::Ptr m_video;
 
-	sf::Vector2f m_size;
+	sf::Vector2f m_visibleSize;
 };
 
 class ILayout : public sf::Drawable {
