@@ -240,6 +240,7 @@ private:
 	Background::Ptr m_background;
 
 	std::list<IFlyingObject::Ptr> m_flyingObjects;
+	std::map<IFlyingObject::Ptr, bool> m_collisionFrees;
 	std::list<Collidable::WeakPtr> m_collidableObjects;
 	std::list<ISplashObject::Ptr> m_splashObjects;
 };

@@ -6,7 +6,7 @@
 LayoutGrabber* LayoutGrabber::m_timerGrabber;
 
 LayoutGrabber::LayoutGrabber() {
-	m_drawerDemo = new DrawerDemo();
+	m_drawerDemo = new DrawerDemo(this);
 	m_awThread = new AlbumWindowThread(m_drawerDemo);
 	m_layoutHwnd = NULL;
 	m_timerId = NULL;
@@ -24,6 +24,11 @@ LayoutGrabber::~LayoutGrabber() {
 	delete m_drawerDemo;
 	delete m_awThread;
 	delete m_chatControllerWorkflow;
+}
+
+void LayoutGrabber::SendChatMessage(uint32_t id, const std::wstring& str)
+{
+	m_chatControllerWorkflow->SendChatMsg(id, (wchar_t*)str.c_str());
 }
 
 void LayoutGrabber::onHwndChanged(const HWND& hwnd)

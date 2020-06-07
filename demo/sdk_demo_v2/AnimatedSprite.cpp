@@ -6,16 +6,14 @@ AnimatedSprite::AnimatedSprite(
 	const Scene::WeakPtr& scene,
 	std::string spriteFile,
 	sf::IntRect spriteRect,
-	std::string splashFile,
-	sf::Vector2f scaleSplash,
+	const ISplashObject::Ptr& splash,
 	float baseRotation,
 	float speed)
 	:_baseRotation(baseRotation),
 	_current(0),
 	_speed(speed),
 	m_scene(scene),
-	_splashFile(splashFile),
-	_scaleSplash(scaleSplash),
+	_splash(splash),
 	_rect(spriteRect)
 {
 	_texture.loadFromFile(spriteFile);
@@ -104,9 +102,9 @@ void AnimatedSprite::OnCollision(bool* destroy) {
 
 	*destroy = true;
 
-	AnimatedSpriteSplash::Ptr splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash(getPosition(), _splashFile));
-	splash->setScale(_scaleSplash);
-	scene->AddSplashObject(splash);
+	_splash->setPosition(getPosition());
+	scene->AddSplashObject(_splash);
+	_splash.reset();
 }
 
 void AnimatedSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -114,12 +112,10 @@ void AnimatedSprite::draw(sf::RenderTarget& target, sf::RenderStates states) con
 	target.draw(_sprite, states);
 }
 
-AnimatedSpriteSplash::AnimatedSpriteSplash(const sf::Vector2f& pos, std::string fileName)
+AnimatedSpriteSplash::AnimatedSpriteSplash(std::string fileName)
 {
 	m_texture.loadFromFile(fileName);
 	m_shape.setTexture(m_texture);
-
-	setPosition(pos);
 
 	auto bounds = m_shape.getGlobalBounds();
 	m_shape.setOrigin(bounds.width * m_shape.getScale().x / 2, bounds.height * m_shape.getScale().y / 2);

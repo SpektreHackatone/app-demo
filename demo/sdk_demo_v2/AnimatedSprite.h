@@ -17,8 +17,7 @@ public:
 		const Scene::WeakPtr& scene,
 		std::string spriteFile,
 		sf::IntRect spriteRect,
-		std::string splashFile,
-		sf::Vector2f scaleSplash,
+		const ISplashObject::Ptr& splash,
 		float baseRotation = 0,
 		float speed = 5);
 
@@ -38,8 +37,8 @@ private:
 	int _current;
 	float _baseRotation;
 	float _speed;
-	std::string _splashFile;
-	sf::Vector2f _scaleSplash;
+
+	ISplashObject::Ptr _splash;
 
 	int getSumPixels(sf::Image, sf::IntRect);
 	SpriteMetaData getSpriteMetaData(sf::Texture, int, int);
@@ -49,7 +48,7 @@ class AnimatedSpriteSplash : public ISplashObject {
 public:
 	using Ptr = std::shared_ptr<AnimatedSpriteSplash>;
 
-	AnimatedSpriteSplash(const sf::Vector2f& pos, std::string fileName);
+	AnimatedSpriteSplash(std::string fileName);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

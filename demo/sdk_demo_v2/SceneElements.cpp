@@ -186,6 +186,7 @@ UserDrawable::Ptr ILayout::UserAt(int pos) {
 
 void Scene::AddFlyingObject(const IFlyingObject::Ptr& obj) {
 	m_flyingObjects.push_back(obj);
+	m_collisionFrees[obj] = false;
 }
 
 void Scene::RemoveFlyingObject(const IFlyingObject::Ptr& obj) {
@@ -200,7 +201,9 @@ void Scene::UpdateCollisions() {
 	for (auto& it = m_flyingObjects.begin(); it != m_flyingObjects.end(); it++) {
 		const IFlyingObject::Ptr sp = *it;
 
-		if (CheckCollision(sp)) {
+		bool has_collision = CheckCollision(sp);
+
+		if (has_collision && m_collisionFrees[sp]) {
 			bool destroy = false;
 			sp->OnCollision(&destroy);
 
@@ -208,9 +211,14 @@ void Scene::UpdateCollisions() {
 				const auto d_it = it;
 				it++;
 				m_flyingObjects.erase(d_it);
+				m_collisionFrees.erase(sp);
 			}
 		}
 		else {
+			if (!has_collision) {
+				m_collisionFrees[sp] = true;
+			}
+
 			sp->MoveBySpeed();
 		}
 	}
