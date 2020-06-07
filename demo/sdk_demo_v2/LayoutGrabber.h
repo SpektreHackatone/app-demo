@@ -14,6 +14,8 @@ struct UserInLayout {
 	unsigned id = 0;
 	std::wstring username;
 	RECT rect{ 0 };
+	bool is_me = false;
+	bool is_host = false;
 };
 
 typedef std::vector<UserInLayout> LayoutInfo;

@@ -19,7 +19,7 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 	auto size = window->getSize();
 	m_windowSize = size;
 	BasicGridLayout::Ptr layout = BasicGridLayout::Ptr(new BasicGridLayout(size.x, size.y, 3, 2));
-	layout->SetFillOrder(std::vector<int>{0, 7, 2, 5, 1, 6, 4, 3});
+	layout->SetFillOrder(std::vector<int>{0, 2, 4, 3, 1, 5});
 
 	Background::Ptr bg = Background::Ptr(new Background(sf::Vector2f(size.x, size.y)));
 	bg->LoadFromFile("backgrounds/background1.jpg");
@@ -75,7 +75,7 @@ void DrawerDemo::PutFrame(const ImgConstPtr& frame, uint32_t ts_ms)
 
 		user->GetVideo()->SetImage(frame, rect);
 
-		if (m_detectorInitialized && i == 0) {
+		if (m_detectorInitialized && user->GetUserInLayoutInfo().is_me) {
 			cv::Size size;
 			size.width = frame->getSize().x;
 			size.height = frame->getSize().y;
@@ -96,8 +96,9 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 
 	for (unsigned i = 0; i < m_layout.size(); i++) {
 		UserDrawable::Ptr user = m_scene->GetLayout()->UserAt(i);
+		user->SetUserInLayoutInfo(m_layout[i]);
 
-		if (i != 0) {
+		if (!m_layout[i].is_me) {
 			m_scene->AddCollidable(user);
 		}
 

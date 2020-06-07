@@ -36,7 +36,24 @@ void LayoutGrabber::onHwndChanged(const HWND& hwnd)
 void LayoutGrabber::onLayoutChanged(const LayoutInfo& layout)
 {
 	OutputDebugString(L"layout changed\n");
-	m_awThread->PutLayout(layout);
+
+	// update users info here?
+	LayoutInfo copy = layout;
+
+	if (m_chatControllerWorkflow) {
+		for (auto& user : copy) {
+			const auto& info = m_chatControllerWorkflow->GetUserInfoByID(user.id);
+
+			if (info->IsMySelf()) {
+				user.is_me = true;
+			}
+			if (info->IsHost()) {
+				user.is_host = true;
+			}
+		}
+	}
+
+	m_awThread->PutLayout(copy);
 }
 
 void LayoutGrabber::onMeetingChanged(bool start)

@@ -128,8 +128,8 @@ sf::FloatRect UserDrawable::GetGlobalBounds() const {
 
 	const auto pos = getPosition();
 
-	ret.left = pos.x;
-	ret.top = pos.y;
+	ret.left = pos.x - m_visibleSize.x / 2;
+	ret.top = pos.y - m_visibleSize.y / 2;
 	ret.width = m_visibleSize.x;
 	ret.height = m_visibleSize.y;
 

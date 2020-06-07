@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "DrawingCommon.h"
+#include "LayoutGrabber.h"
 #include <list>
 
 class Collidable {
@@ -148,11 +149,20 @@ public:
 		m_visibleSize = size;
 	}
 
+	const UserInLayout& GetUserInLayoutInfo() const {
+		return m_layoutInfo;
+	}
+
+	void SetUserInLayoutInfo(const UserInLayout& info) {
+		m_layoutInfo = info;
+	}
+
 private:
 	IPhotoFrame::Ptr m_frame;
 	UserVideo::Ptr m_video;
 
 	sf::Vector2f m_visibleSize;
+	UserInLayout m_layoutInfo;
 };
 
 class ILayout : public sf::Drawable {
