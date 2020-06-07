@@ -228,6 +228,19 @@ void DrawerDemo::LaunchTomato(const IFlyingObject::Ptr& obj, const cv::Point& p1
 	// so everyone can enjoy tomato
 	m_scene->RemoveFlyingObject(obj);
 
+	float spd = dx * dx + dy * dy;
+
+	// if it is too slow, ignore
+	if (spd <= 1.0) {
+		return;
+	}
+
+	// if it's not fast enough, boost up
+	else if (spd <= 10.0) {
+		dx *= 2.0;
+		dy *= 2.0;
+	}
+
 	std::wstring msg = TomatoLaunchApi::LaunchTomatoMsg(obj, dx * scale, dy * scale);
 	m_outputQueue.push_back(msg);
 }
