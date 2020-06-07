@@ -40,15 +40,15 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 	AnimatedEffect::Ptr explosion = AnimatedEffect::Ptr(new AnimatedEffect("images/explosion0_71_100_5_5.png", sf::IntRect(0, 0, 71, 100), 8, 22));
 
 	AnimatedSpriteSplash::Ptr tomato_splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/grunge0.png"));
-	tomato_splash->setScale(0.1, 0.1);
+	tomato_splash->setScale(0.08, 0.08);
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(
 		m_scene,
-		"images/tomato_128_128.png",
-		sf::IntRect(0, 0, 128, 128),
+		"images/fireballsm_128_146_6_5.png",
+		sf::IntRect(0, 0, 128, 146),
 		tomato_splash,
 		explosion,
 		90));
-	tomato->setScale(0.2, 0.2);
+	tomato->setScale(0.3, 0.3);
 
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y * 3 / 4);
 	tomato->SetSpeed(sf::Vector2f(-10, -7.5));
