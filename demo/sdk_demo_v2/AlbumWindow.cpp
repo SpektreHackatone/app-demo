@@ -8,6 +8,7 @@ AlbumWindowThread::AlbumWindowThread(IDrawingThing* drawer)
     , m_drawer(drawer)
     , m_layoutUpdated(false)
     , m_frameUpdated(false)
+    , m_chatUpdated(false)
     , m_lastFrameTsMs(0)
 {
 }
@@ -47,6 +48,14 @@ void AlbumWindowThread::PutChatMessage(const std::wstring& str)
     m_chatQueue.push_back(str);
     m_chatUpdated = true;
     m_mutex.unlock();
+}
+
+std::list<std::wstring>&& AlbumWindowThread::TakeMsgList() {
+    m_mutex.lock();
+    std::list<std::wstring>&& ret = std::move(m_outputQueue);
+    m_mutex.unlock();
+
+    return std::move(ret);
 }
 
 void AlbumWindowThread::ThreadFunc()
@@ -93,6 +102,12 @@ void AlbumWindowThread::ThreadFunc()
                 m_chatQueue.clear();
                 m_chatUpdated = false;
             }
+
+            std::list<std::wstring> q = m_drawer->TakeOutputChatQueue();
+            for (auto&& el : q) {
+                m_outputQueue.emplace_back(std::move(el));
+            }
+
             m_mutex.unlock();
         }
 

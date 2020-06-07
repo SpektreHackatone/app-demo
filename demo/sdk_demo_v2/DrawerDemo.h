@@ -4,12 +4,11 @@
 #include "SceneElements.h"
 #include "MotionDetectorSingleRect.h"
 
-class LayoutGrabber;
 
 class DrawerDemo : public IDrawingThing
 {
 public:
-	DrawerDemo(LayoutGrabber* g);
+	DrawerDemo();
 	virtual ~DrawerDemo();
 
 	// this function is called once when window is opened
@@ -28,6 +27,8 @@ public:
 
 	void OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2);
 
+	std::list<std::wstring>&& TakeOutputChatQueue() override;
+
 private:
 	IFlyingObject::Ptr SpawnTomato(const cv::Point& p);
 	IFlyingObject::Ptr SpawnFireball(const cv::Point& p);
@@ -44,6 +45,6 @@ private:
 	MotionDetectorWithInterestRects m_detector;
 	bool m_detectorInitialized;
 
-	LayoutGrabber* m_g;
+	std::list<std::wstring> m_outputQueue;
 };
 

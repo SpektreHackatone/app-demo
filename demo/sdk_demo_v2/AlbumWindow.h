@@ -23,6 +23,9 @@ public:
 
 	// this function puts chat message in here
 	virtual void PutChatMessage(const std::wstring& str) = 0;
+
+	// this function takes output chat message queue
+	virtual std::list<std::wstring>&& TakeOutputChatQueue() = 0;
 };
 
 class AlbumWindowThread {
@@ -35,6 +38,8 @@ public:
 	void PutLayout(const LayoutInfo& l);
 	void PutFrame(const ImgConstPtr& img, uint32_t ts_ms);
 	void PutChatMessage(const std::wstring& str);
+
+	std::list<std::wstring>&& TakeMsgList();
 
 private:
 	static void ThreadWrapper(AlbumWindowThread* p);
@@ -54,6 +59,8 @@ private:
 
 	bool m_chatUpdated;
 	std::list<std::wstring> m_chatQueue;
+
+	std::list<std::wstring> m_outputQueue;
 
 	IDrawingThing* m_drawer;
 
