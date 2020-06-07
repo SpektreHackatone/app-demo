@@ -25,9 +25,11 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 
 	Background::Ptr bg = Background::Ptr(new Background(sf::Vector2f(size.x, size.y)));
 	bg->LoadFromFile("backgrounds/background1.jpg");
+	Menu::Ptr menu = Menu::Ptr(new Menu);
 
 	m_scene->SetLayout(layout);
 	m_scene->SetBackground(bg);
+	m_scene->SetMenu(menu);
 
 	LayoutInfo l(8);
 	for (unsigned i = 0; i < 8; i++) {

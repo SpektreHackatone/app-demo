@@ -4,6 +4,7 @@
 #include "DrawingCommon.h"
 #include "LayoutGrabber.h"
 #include <list>
+#include "Menu.h"
 
 class Collidable {
 public:
@@ -242,6 +243,14 @@ public:
 	using Ptr = std::shared_ptr<Scene>;
 	using WeakPtr = std::weak_ptr<Scene>;
 
+	void SetMenu(const Menu::Ptr& menu) {
+		m_menu = menu;
+	}
+
+	Menu::Ptr GetMenu() {
+		return m_menu;
+	}
+
 	void SetLayout(const ILayout::Ptr& layout) {
 		m_layout = layout;
 	}
@@ -296,6 +305,7 @@ private:
 
 	ILayout::Ptr m_layout;
 	Background::Ptr m_background;
+	Menu::Ptr m_menu;
 
 	std::list<IFlyingObject::Ptr> m_flyingObjects;
 	std::map<IFlyingObject::Ptr, bool> m_collisionFrees;

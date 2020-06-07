@@ -230,6 +230,7 @@
     <ClCompile Include="LOGIN_login_with_sso_workflow.cpp" />
     <ClCompile Include="LOGIN_restapi_without_login_workflow.cpp" />
     <ClCompile Include="LOGIN_sdk_login_UI.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="mess_info.cpp" />
     <ClCompile Include="more_features_ui.cpp" />
     <ClCompile Include="more_features_workflow.cpp" />
@@ -256,6 +257,7 @@
     <ClCompile Include="SETTINGS_virtualBG_workflow.cpp" />
     <ClCompile Include="setting_api_test.cpp" />
     <ClCompile Include="ShareToolbarWindow.cpp" />
+    <ClCompile Include="SpriteHelper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -313,6 +315,7 @@
     <ClInclude Include="LOGIN_login_with_sso_workflow.h" />
     <ClInclude Include="LOGIN_restapi_without_login_workflow.h" />
     <ClInclude Include="LOGIN_sdk_login_UI.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="mess_info.h" />
     <ClInclude Include="more_features_ui.h" />
     <ClInclude Include="more_features_workflow.h" />
@@ -341,6 +344,7 @@
     <ClInclude Include="SETTINGS_virtualBG_workflow.h" />
     <ClInclude Include="setting_api_test.h" />
     <ClInclude Include="ShareToolbarWindow.h" />
+    <ClInclude Include="SpriteHelper.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TimerWinApi.h" />
