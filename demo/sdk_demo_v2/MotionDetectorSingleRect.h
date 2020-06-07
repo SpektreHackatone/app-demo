@@ -43,7 +43,7 @@ class MotionDetectorWithInterestRects
 public:
 	/// <param name="rects"> - зоны интереса по id (ровно 2!)</param>
 	/// <param name="detection_period"> - определяет периодичность детектирования движения, в миллисекундах</param>
-	MotionDetectorWithInterestRects(int in_detection_period = 1000);
+	MotionDetectorWithInterestRects(int in_detection_period = 300);
 
 	void SetRects(InterestRects rects) {
 		interest_rects_ = rects;
@@ -56,7 +56,7 @@ public:
 	static const int kThresholdForMotionOut{ 5 };
 	static const int kThresholdForOut{ 12 };
 
-	static const int kTimeout{ 5000 };
+	static const int kTimeout{ 1000 };
 
 
 	static const double kInAreaCoef;
