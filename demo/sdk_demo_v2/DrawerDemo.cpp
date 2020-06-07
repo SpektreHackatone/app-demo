@@ -58,6 +58,11 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
 	*/
 	m_scene->AddFlyingObject(tomato);
+
+	AnimatedEffect::Ptr rain = AnimatedEffect::Ptr(new AnimatedEffect("images/rain_400_300_3.png", sf::IntRect(0, 0, 400, 300), 0, 20));
+	rain->SetRate(100);
+	rain->setScale(size.x / 400 * 2, size.y / 300 * 2);
+	m_scene->AddAnimatedObject(rain);
 }
 
 void DrawerDemo::Draw(sf::RenderWindow* window)

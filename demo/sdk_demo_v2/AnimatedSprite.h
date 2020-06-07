@@ -79,6 +79,7 @@ private:
 	sf::Texture m_texture;
 	sf::IntRect m_rect;
 	SpriteMetaData m_meta;
+	sf::Clock clock;
 
 	int getSumPixels(sf::Image, sf::IntRect);
 	SpriteMetaData getSpriteMetaData();

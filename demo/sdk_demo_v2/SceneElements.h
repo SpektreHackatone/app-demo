@@ -85,8 +85,12 @@ public:
 
 	virtual void UpdateObject() = 0;
 	void NextStep() {
-		m_cur_steps++;
-		UpdateObject();
+		if (clock.getElapsedTime().asMilliseconds() > m_rate)
+		{
+			m_cur_steps++;
+			UpdateObject();
+			clock.restart();
+		}
 	}
 	void SetCurSteps(int cur_steps) {
 		m_cur_steps = cur_steps;
@@ -100,10 +104,18 @@ public:
 	int GetSteps() {
 		return m_steps;
 	}
+	void SetRate(int rate) {
+		m_rate = rate;
+	}
+	int GetRate() {
+		return m_rate;
+	}
 
 private:
 	int m_steps;
 	int m_cur_steps = 0;
+	int m_rate = 0;
+	sf::Clock clock;
 };
 
 // drawing of user elements
