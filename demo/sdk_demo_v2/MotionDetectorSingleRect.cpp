@@ -6,7 +6,13 @@ const double MotionDetectorWithInterestRects::kInAreaCoef{ 0.1 };
 const double MotionDetectorWithInterestRects::kMotionOutAreaCoef{ 0.02 };
 const double MotionDetectorWithInterestRects::kOutAreaCoef{ 0.05 };
 
+//#define DBG_WNDS
+#define MAIN_DBG_WND
+
 namespace {
+
+	const bool useDebugWindows{ false };
+
 	cv::Mat getImgsDiff(cv::Mat img1, cv::Mat img2, cv::Mat img3, int threshold) {
 
 		cv::cvtColor(img1, img1, cv::COLOR_BGR2GRAY);
@@ -75,23 +81,26 @@ namespace {
 MotionDetectorWithInterestRects::MotionDetectorWithInterestRects(int detection_period) :
 	kInDetectionPeriod(detection_period)
 {
-	cv::namedWindow("in_motion0");
-	cv::moveWindow("in_motion0", 100, 500);
+#ifdef DBG_WNDS
+		cv::namedWindow("in_motion0");
+		cv::moveWindow("in_motion0", 100, 500);
 
-	cv::namedWindow("in_motion1");
-	cv::moveWindow("in_motion1", 300, 500);
+		cv::namedWindow("in_motion1");
+		cv::moveWindow("in_motion1", 300, 500);
 
-	cv::namedWindow("leave0");
-	cv::moveWindow("leave0", 100, 650);
+		cv::namedWindow("leave0");
+		cv::moveWindow("leave0", 100, 650);
 
-	cv::namedWindow("leave1");
-	cv::moveWindow("leave1", 300, 650);
+		cv::namedWindow("leave1");
+		cv::moveWindow("leave1", 300, 650);
 
-	cv::namedWindow("out_motion0");
-	cv::moveWindow("out_motion0", 100, 800);
+		cv::namedWindow("out_motion0");
+		cv::moveWindow("out_motion0", 100, 800);
 
-	cv::namedWindow("out_motion1");
-	cv::moveWindow("out_motion1", 300, 800);
+		cv::namedWindow("out_motion1");
+		cv::moveWindow("out_motion1", 300, 800);
+#endif // DBG_WNDS
+
 }
 
 void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc func) {
@@ -118,8 +127,10 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 
 				auto motion_img = getImgsDiff(zones_[i].background_, zones_[i].last_images_.front(), zones_[i].last_images_.back(), MotionDetectorWithInterestRects::kThresholdForIn);
 
+#ifdef DBG_WNDS
 				cv::imshow("in_motion" + std::to_string(i), motion_img);
-				cv::waitKey(1);
+					cv::waitKey(1);
+#endif
 
 				auto has_motion_and_center = DetectMotion(motion_img, MotionDetectorWithInterestRects::kInAreaCoef);
 
@@ -153,8 +164,10 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 				{
 					auto diff = getImgsDiff(zones_[i].last_images_[0], zones_[i].last_images_[1], zones_[i].last_images_[2], MotionDetectorWithInterestRects::kThresholdForMotionOut);
 
-					cv::imshow("out_motion" + std::to_string(i), diff);
-					cv::waitKey(1);
+					if (useDebugWindows) {
+						cv::imshow("out_motion" + std::to_string(i), diff);
+						cv::waitKey(1);
+					}
 
 					auto has_motion_and_center = DetectMotion(diff, MotionDetectorWithInterestRects::kMotionOutAreaCoef);
 					if (has_motion_and_center.first)
@@ -165,8 +178,10 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 				{
 					auto diff_background = getImgsDiff(zones_[i].background_, zones_[i].last_images_[0], zones_[i].last_images_[1], MotionDetectorWithInterestRects::kThresholdForOut);
 
+#ifdef DBG_WNDS
 					cv::imshow("leave" + std::to_string(i), diff_background);
 					cv::waitKey(1);
+#endif
 
 					auto has_out_motion_and_center = DetectMotion(diff_background, MotionDetectorWithInterestRects::kOutAreaCoef);
 
@@ -204,6 +219,7 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 
 	//отрисовка
 
+#ifdef MAIN_DBG_WND
 	cv::rectangle(img, interest_rects_[0], cv::Scalar(0, 255, 0));
 	cv::rectangle(img, interest_rects_[1], cv::Scalar(0, 255, 0));
 
@@ -224,6 +240,7 @@ void MotionDetectorWithInterestRects::Detect(cv::Mat img, int ts, SignalFunc fun
 
 	cv::imshow("img", img);
 	cv::waitKey(1);
+#endif
 
 
 }
