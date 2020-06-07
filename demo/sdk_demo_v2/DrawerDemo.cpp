@@ -161,6 +161,40 @@ IFlyingObject::Ptr DrawerDemo::SpawnTomato(const cv::Point& p1) {
 	return tomato;
 }
 
+IFlyingObject::Ptr DrawerDemo::SpawnFireball(const cv::Point& p1) {
+	UserDrawable::Ptr user;
+	for (unsigned i = 0; i < m_scene->GetLayout()->CountUsers(); i++) {
+		user = m_scene->GetLayout()->UserAt(i);
+		if (user->GetUserInLayoutInfo().is_me) {
+			break;
+		}
+	}
+
+	if (!user->GetUserInLayoutInfo().is_me) {
+		OutputDebugString(L"cant find myself to spawn tomato");
+		return nullptr;
+	}
+
+	sf::Vector2f pos = user->GetVideo()->GetRelativeCoords(sf::Vector2f(p1.x, p1.y));
+
+	float pos_x = user->getPosition().x + pos.x;
+	float pos_y = user->getPosition().y + pos.y;
+
+	AnimatedSprite::Ptr fireball = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
+		"images/fireball_3_529_600_6_5.png",
+		sf::IntRect(0, 0, 529, 600),
+		"images/grunge0.png",
+		sf::Vector2f(0.2, 0.1),
+		90));
+	fireball->setScale(0.25, 0.25);
+	fireball->setPosition(pos_x, pos_y);
+	fireball->SetSpeed(sf::Vector2f(0, 0));
+
+	m_scene->AddFlyingObject(fireball);
+
+	return fireball;
+}
+
 void DrawerDemo::LaunchTomato(const IFlyingObject::Ptr& obj, const cv::Point& p1, const cv::Point& p2) {
 	float dx = p2.x - p1.x;
 	float dy = p2.y - p1.y;
@@ -176,7 +210,7 @@ void DrawerDemo::OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2)
 	switch (ev) {
 	case MDEventType::IN1:
 		if (!m_leftLauncher) {
-			m_leftLauncher = SpawnTomato(p1);
+			m_leftLauncher = SpawnFireball(p1);
 		}
 		break;
 	case MDEventType::IN2:

@@ -214,6 +214,18 @@ void Scene::UpdateCollisions() {
 			sp->MoveBySpeed();
 		}
 	}
+	for (auto& it = m_animatedObjects.begin(); it != m_animatedObjects.end(); it++) {
+		const IAnimatedObject::Ptr sp = *it;
+
+		if (CheckAnimation(sp)) {
+			sp->NextStep();
+		}
+		else {
+			const auto d_it = it;
+			it++;
+			m_animatedObjects.erase(d_it);
+		}
+	}
 }
 
 bool Scene::CheckCollision(const Collidable::Ptr& obj)
@@ -233,6 +245,11 @@ bool Scene::CheckCollision(const Collidable::Ptr& obj)
 	}
 
 	return false;
+}
+
+bool Scene::CheckAnimation(const IAnimatedObject::Ptr& obj)
+{
+	return obj->GetSteps() - obj->GetCurSteps() > 0;
 }
 
 void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -255,6 +272,11 @@ void Scene::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 	// 4. Draw flying objects
 	for (const auto& obj : m_flyingObjects) {
+		target.draw(*obj, states);
+	}
+
+	// 5. Draw animated objects
+	for (const auto& obj : m_animatedObjects) {
 		target.draw(*obj, states);
 	}
 

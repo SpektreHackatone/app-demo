@@ -28,6 +28,7 @@ public:
 
 private:
 	IFlyingObject::Ptr SpawnTomato(const cv::Point& p);
+	IFlyingObject::Ptr SpawnFireball(const cv::Point& p);
 	void LaunchTomato(const IFlyingObject::Ptr& obj, const cv::Point& p1, const cv::Point& p2);
 
 	Scene::Ptr m_scene;

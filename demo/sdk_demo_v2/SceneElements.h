@@ -78,6 +78,31 @@ public:
 	using Ptr = std::shared_ptr<ISplashObject>;
 };
 
+class IAnimatedObject : public sf::Drawable, sf::Transformable
+{
+public:
+	using Ptr = std::shared_ptr<IAnimatedObject>;
+
+	virtual void UpdateObject();
+	void NextStep() {
+		m_cur_steps++;
+		UpdateObject();
+	}
+	int GetCurSteps() {
+		return m_cur_steps;
+	}
+	void SetSteps(int steps) {
+		m_steps = steps;
+	}
+	int GetSteps() {
+		return m_steps;
+	}
+
+private:
+	int m_steps;
+	int m_cur_steps;
+};
+
 // drawing of user elements
 
 class IPhotoFrame : public sf::Drawable, public sf::Transformable {
@@ -220,6 +245,17 @@ public:
 		m_splashObjects.clear();
 	}
 
+	void AddAnimatedObject(const IAnimatedObject::Ptr& obj) {
+		m_animatedObjects.push_back(obj);
+	}
+	void RemoveAnimatedObject(const IAnimatedObject::Ptr& obj) {
+		auto& it = std::find(m_animatedObjects.cbegin(), m_animatedObjects.cend(), obj);
+
+		if (it != m_animatedObjects.cend()) {
+			m_animatedObjects.erase(it);
+		}
+	}
+
 	void AddFlyingObject(const IFlyingObject::Ptr& obj);
 	void RemoveFlyingObject(const IFlyingObject::Ptr& obj);
 
@@ -235,6 +271,7 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 private:
 	bool CheckCollision(const Collidable::Ptr& obj);
+	bool CheckAnimation(const IAnimatedObject::Ptr& obj);
 
 	ILayout::Ptr m_layout;
 	Background::Ptr m_background;
@@ -242,4 +279,5 @@ private:
 	std::list<IFlyingObject::Ptr> m_flyingObjects;
 	std::list<Collidable::WeakPtr> m_collidableObjects;
 	std::list<ISplashObject::Ptr> m_splashObjects;
+	std::list<IAnimatedObject::Ptr> m_animatedObjects;
 };
