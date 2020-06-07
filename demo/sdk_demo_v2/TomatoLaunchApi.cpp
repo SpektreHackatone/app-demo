@@ -33,7 +33,8 @@ IFlyingObject::Ptr TomatoLaunchApi::MakeTomato(const Scene::WeakPtr& scene, cons
 		ret = AnimatedSprite::Ptr(new AnimatedSprite(scene,
 			"images/tomato_128_128.png",
 			sf::IntRect(0, 0, 128, 128),
-			splash));
+			splash,
+			AnimatedEffect::Ptr(nullptr)));
 		ret->setScale(sf::Vector2f(t_scale, t_scale));
 	}
 

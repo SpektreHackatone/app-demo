@@ -38,13 +38,19 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 	}
 	m_layout = l;
 
-	AnimatedSpriteSplash::Ptr tomato_splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/klaksa2.png"));
+	AnimatedEffect::Ptr explosion = AnimatedEffect::Ptr(new AnimatedEffect("images/explosion0_71_100_5_5.png", sf::IntRect(0, 0, 71, 100), 8, 22));
+
+	AnimatedSpriteSplash::Ptr tomato_splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/grunge0.png"));
 	tomato_splash->setScale(0.1, 0.1);
-	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
+	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(
+		m_scene,
 		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
-		tomato_splash));
+		tomato_splash,
+		explosion,
+		90));
 	tomato->setScale(0.2, 0.2);
+
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y * 3 / 4);
 	tomato->SetSpeed(sf::Vector2f(-10, -7.5));
 	/*
@@ -86,7 +92,7 @@ void DrawerDemo::PutFrame(const ImgConstPtr& frame, uint32_t ts_ms)
 			cv::Mat cv_img(size, CV_8UC4, (void*)frame->getPixelsPtr());
 			cv::Mat roi(cv_img(cv::Rect(rect.left, rect.top, rect.width, rect.height)));
 
-			m_detector.Detect(roi, ts_ms, 
+			m_detector.Detect(roi, ts_ms,
 				[this](MDEventType ev, cv::Point p1, cv::Point p2) { OnMotionDetected(ev, p1, p2); });
 		}
 	}
@@ -115,7 +121,8 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
 		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
-		tomato_splash));
+		tomato_splash,
+		AnimatedEffect::Ptr(nullptr)));
 	tomato->setScale(0.2, 0.2);
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
 	tomato->SetSpeed(sf::Vector2f(-10, -7.5));
@@ -156,7 +163,8 @@ IFlyingObject::Ptr DrawerDemo::SpawnTomato(const cv::Point& p1) {
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
 		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
-		tomato_splash));
+		tomato_splash,
+		AnimatedEffect::Ptr(nullptr)));
 	tomato->setScale(0.3, 0.3);
 	tomato->setPosition(pos_x, pos_y);
 	tomato->SetSpeed(sf::Vector2f(0, 0));
@@ -185,11 +193,16 @@ IFlyingObject::Ptr DrawerDemo::SpawnFireball(const cv::Point& p1) {
 	float pos_x = user->getPosition().x + pos.x;
 	float pos_y = user->getPosition().y + pos.y;
 
+	AnimatedSpriteSplash::Ptr grunge = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/grunge0.png"));
+	grunge->setScale(0.1, 0.1);
+
+	AnimatedEffect::Ptr explosion = AnimatedEffect::Ptr(new AnimatedEffect("images/explosion0_71_100_5_5.png", sf::IntRect(0, 0, 71, 100), 8, 22));
+
 	AnimatedSprite::Ptr fireball = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
 		"images/fireball_3_529_600_6_5.png",
 		sf::IntRect(0, 0, 529, 600),
-		"images/grunge0.png",
-		sf::Vector2f(0.2, 0.1),
+		grunge,
+		explosion,
 		90));
 	fireball->setScale(0.25, 0.25);
 	fireball->setPosition(pos_x, pos_y);

@@ -7,6 +7,7 @@ AnimatedSprite::AnimatedSprite(
 	std::string spriteFile,
 	sf::IntRect spriteRect,
 	const ISplashObject::Ptr& splash,
+	const IAnimatedObject::Ptr& effect,
 	float baseRotation,
 	float speed)
 	:_baseRotation(baseRotation),
@@ -14,6 +15,7 @@ AnimatedSprite::AnimatedSprite(
 	_speed(speed),
 	m_scene(scene),
 	_splash(splash),
+	_effect(effect),
 	_rect(spriteRect)
 {
 	_texture.loadFromFile(spriteFile);
@@ -90,6 +92,8 @@ sf::FloatRect AnimatedSprite::GetGlobalBounds() const {
 void AnimatedSprite::MoveBySpeed()
 {
 	nextSprite();
+	auto speedN = Normalize(GetSpeed());
+	setRotation(RadToDeg(std::atan2(speedN.y, speedN.x)) - _baseRotation);
 	move(GetSpeed());
 }
 
@@ -101,10 +105,18 @@ void AnimatedSprite::OnCollision(bool* destroy) {
 	}
 
 	*destroy = true;
-
-	_splash->setPosition(getPosition());
-	scene->AddSplashObject(_splash);
-	_splash.reset();
+	if (_splash != nullptr)
+	{
+		_splash->setPosition(getPosition());
+		scene->AddSplashObject(_splash);
+		_splash.reset();
+	}
+	if (_effect != nullptr)
+	{
+		_effect->setPosition(getPosition());
+		scene->AddAnimatedObject(_effect);
+		_effect.reset();
+	}
 }
 
 void AnimatedSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -126,7 +138,7 @@ void AnimatedSpriteSplash::draw(sf::RenderTarget& target, sf::RenderStates state
 	target.draw(m_shape, states);
 }
 
-AnimatedEffect::AnimatedEffect(const sf::Vector2f& pos, std::string fileName, sf::IntRect rect, int from, int to)
+AnimatedEffect::AnimatedEffect(std::string fileName, sf::IntRect rect, int from, int to)
 	: m_rect(rect)
 {
 	SetCurSteps(from);
@@ -136,7 +148,6 @@ AnimatedEffect::AnimatedEffect(const sf::Vector2f& pos, std::string fileName, sf
 	m_shape.setTextureRect(m_rect);
 	m_meta = getSpriteMetaData();
 
-	setPosition(pos);
 	auto bounds = m_shape.getGlobalBounds();
 	m_shape.setOrigin(bounds.width * m_shape.getScale().x / 2, bounds.height * m_shape.getScale().y / 2);
 }

@@ -13,11 +13,13 @@ struct SpriteMetaData
 class AnimatedSprite : public IFlyingObject
 {
 public:
+	using Ptr = std::shared_ptr<AnimatedSprite>;
 	AnimatedSprite(
 		const Scene::WeakPtr& scene,
 		std::string spriteFile,
 		sf::IntRect spriteRect,
 		const ISplashObject::Ptr& splash,
+		const IAnimatedObject::Ptr& effect,
 		float baseRotation = 0,
 		float speed = 5);
 
@@ -39,6 +41,7 @@ private:
 	float _speed;
 
 	ISplashObject::Ptr _splash;
+	IAnimatedObject::Ptr _effect;
 
 	int getSumPixels(sf::Image, sf::IntRect);
 	SpriteMetaData getSpriteMetaData(sf::Texture, int, int);
@@ -61,7 +64,7 @@ class AnimatedEffect : public IAnimatedObject
 {
 public:
 	using Ptr = std::shared_ptr<AnimatedEffect>;
-	AnimatedEffect(const sf::Vector2f& pos, std::string fileName, sf::IntRect, int from, int to);
+	AnimatedEffect(std::string fileName, sf::IntRect, int from, int to);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
