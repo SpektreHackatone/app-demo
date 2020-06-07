@@ -43,6 +43,9 @@ void LayoutGrabber::onLayoutChanged(const LayoutInfo& layout)
 	if (m_chatControllerWorkflow) {
 		for (auto& user : copy) {
 			const auto& info = m_chatControllerWorkflow->GetUserInfoByID(user.id);
+			if (!info) {
+				continue;
+			}
 
 			if (info->IsMySelf()) {
 				user.is_me = true;

@@ -129,7 +129,18 @@ void DrawerDemo::PutChatMessage(const std::wstring& str)
 }
 
 IFlyingObject::Ptr DrawerDemo::SpawnTomato(const cv::Point& p1) {
-	UserDrawable::Ptr user = m_scene->GetLayout()->UserAt(0);
+	UserDrawable::Ptr user;
+	for (unsigned i = 0; i < m_scene->GetLayout()->CountUsers(); i++) {
+		user = m_scene->GetLayout()->UserAt(i);
+		if (user->GetUserInLayoutInfo().is_me) {
+			break;
+		}
+	}
+
+	if (!user->GetUserInLayoutInfo().is_me) {
+		OutputDebugString(L"cant find myself to spawn tomato");
+		return nullptr;
+	}
 
 	sf::Vector2f pos = user->GetVideo()->GetRelativeCoords(sf::Vector2f(p1.x, p1.y));
 
