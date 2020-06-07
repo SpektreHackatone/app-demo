@@ -47,6 +47,7 @@ public:
 	void onChatMsgNotifcation(ZOOM_SDK_NAMESPACE::IChatMsgInfo* chatMsg, const wchar_t* ccc) override;
 	void onChatStautsChangedNotification(ZOOM_SDK_NAMESPACE::ChatStatus* status_) override;
 
+	void SendChatMessage(uint32_t id, const std::wstring& str);
 
 private:
 	void onTimerFired(uint32_t ts);

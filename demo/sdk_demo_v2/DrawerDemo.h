@@ -4,10 +4,12 @@
 #include "SceneElements.h"
 #include "MotionDetectorSingleRect.h"
 
+class LayoutGrabber;
+
 class DrawerDemo : public IDrawingThing
 {
 public:
-	DrawerDemo();
+	DrawerDemo(LayoutGrabber* g);
 	virtual ~DrawerDemo();
 
 	// this function is called once when window is opened
@@ -41,5 +43,7 @@ private:
 
 	MotionDetectorWithInterestRects m_detector;
 	bool m_detectorInitialized;
+
+	LayoutGrabber* m_g;
 };
 

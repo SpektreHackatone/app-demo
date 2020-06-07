@@ -90,6 +90,7 @@ void AlbumWindowThread::ThreadFunc()
 
             if (m_chatUpdated) {
                 strs = m_chatQueue;
+                m_chatQueue.clear();
                 m_chatUpdated = false;
             }
             m_mutex.unlock();

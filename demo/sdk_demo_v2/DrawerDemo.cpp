@@ -2,10 +2,13 @@
 #include "SceneElements.h"
 #include "SceneLayoutImpls.h"
 #include "AnimatedSprite.h"
+#include "TomatoLaunchApi.h"
+#include "LayoutGrabber.h"
 
-DrawerDemo::DrawerDemo()
+DrawerDemo::DrawerDemo(LayoutGrabber* g)
 	: m_detector()
-	, m_detectorInitialized(false) {}
+	, m_detectorInitialized(false)
+	, m_g(g) {}
 
 DrawerDemo::~DrawerDemo()
 {
@@ -35,13 +38,14 @@ void DrawerDemo::Init(sf::RenderWindow* window)
 	}
 	m_layout = l;
 
+	AnimatedSpriteSplash::Ptr tomato_splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/klaksa2.png"));
+	tomato_splash->setScale(0.1, 0.1);
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
 		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
-		"images/klaksa2.png",
-		sf::Vector2f(0.1, 0.1)));
+		tomato_splash));
 	tomato->setScale(0.2, 0.2);
-	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
+	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y * 3 / 4);
 	tomato->SetSpeed(sf::Vector2f(-10, -7.5));
 	/*
 	SimpleTomato::Ptr tomato = SimpleTomato::Ptr(new SimpleTomato(m_scene));
@@ -97,10 +101,7 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 	for (unsigned i = 0; i < m_layout.size(); i++) {
 		UserDrawable::Ptr user = m_scene->GetLayout()->UserAt(i);
 		user->SetUserInLayoutInfo(m_layout[i]);
-
-		if (!m_layout[i].is_me) {
-			m_scene->AddCollidable(user);
-		}
+		m_scene->AddCollidable(user);
 
 		if (!m_detectorInitialized) {
 			const auto& sz = m_layout[i].rect;
@@ -109,11 +110,12 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 		}
 	}
 
+	AnimatedSpriteSplash::Ptr tomato_splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/klaksa2.png"));
+	tomato_splash->setScale(0.1, 0.1);
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
 		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
-		"images/klaksa2.png",
-		sf::Vector2f(0.1, 0.1)));
+		tomato_splash));
 	tomato->setScale(0.2, 0.2);
 	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
 	tomato->SetSpeed(sf::Vector2f(-10, -7.5));
@@ -121,11 +123,12 @@ void DrawerDemo::PutLayout(const LayoutInfo& layout)
 
 void DrawerDemo::PutChatMessage(const std::wstring& str)
 {
-	// TODO: dropper
-	SimpleTomato::Ptr tomato = SimpleTomato::Ptr(new SimpleTomato(m_scene));
-	tomato->SetSpeed(sf::Vector2f(-5, -2.5));
-	tomato->setPosition(m_windowSize.x / 2, m_windowSize.y / 2);
-	m_scene->AddFlyingObject(tomato);
+	OutputDebugString(str.c_str());
+	// tomato launcher!
+	if (str[0] == L'$' && str[1] == 'L') {
+		IFlyingObject::Ptr tomato = TomatoLaunchApi::GetTomatoFromMsg(m_scene, str);
+		m_scene->AddFlyingObject(tomato);
+	}
 }
 
 IFlyingObject::Ptr DrawerDemo::SpawnTomato(const cv::Point& p1) {
@@ -147,11 +150,13 @@ IFlyingObject::Ptr DrawerDemo::SpawnTomato(const cv::Point& p1) {
 	float pos_x = user->getPosition().x + pos.x;
 	float pos_y = user->getPosition().y + pos.y;
 
+	// FIXME: use tomato factory instead
+	AnimatedSpriteSplash::Ptr tomato_splash = AnimatedSpriteSplash::Ptr(new AnimatedSpriteSplash("images/klaksa2.png"));
+	tomato_splash->setScale(0.3, 0.3);
 	AnimatedSprite::Ptr tomato = AnimatedSprite::Ptr(new AnimatedSprite(m_scene,
 		"images/tomato_128_128.png",
 		sf::IntRect(0, 0, 128, 128),
-		"images/klaksa2.png",
-		sf::Vector2f(0.3, 0.3)));
+		tomato_splash));
 	tomato->setScale(0.3, 0.3);
 	tomato->setPosition(pos_x, pos_y);
 	tomato->SetSpeed(sf::Vector2f(0, 0));
@@ -201,7 +206,12 @@ void DrawerDemo::LaunchTomato(const IFlyingObject::Ptr& obj, const cv::Point& p1
 
 	const float scale = 0.5;
 
-	obj->SetSpeed(sf::Vector2f(dx * scale, dy * scale));
+	// send message to chat instead of actual launching
+	// so everyone can enjoy tomato
+	m_scene->RemoveFlyingObject(obj);
+
+	std::wstring msg = TomatoLaunchApi::LaunchTomatoMsg(obj, dx * scale, dy * scale);
+	m_g->SendChatMessage(0, msg);
 }
 
 void DrawerDemo::OnMotionDetected(MDEventType ev, cv::Point p1, cv::Point p2)
